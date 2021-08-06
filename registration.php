@@ -1,25 +1,157 @@
 <?php
 require_once "identification.php";
 $user_name=$row['name'];
+$sel_up = "select up_login_id from user_profile where up_login_id=$login_id";
+$sel_result = mysqli_query($conn, $sel_up);
+$rowcount= mysqli_num_rows($sel_result);
+if($rowcount>=1)
+	header('location:leaderboard.php');
 if(isset($_POST['submit'])){
-	$up_username = mysqli_real_escape_string($conn, $_POST['up_username']);
-	$up_first_name = mysqli_real_escape_string($conn, $_POST['up_first_name']);
-	$up_last_name = mysqli_real_escape_string($conn, $_POST['up_last_name']);
+	$up_fullname = mysqli_real_escape_string($conn, $_POST['up_fullname']);
+	$up_father = mysqli_real_escape_string($conn, $_POST['up_father']);
+	$up_mother = mysqli_real_escape_string($conn, $_POST['up_mother']);
+	$up_email = mysqli_real_escape_string($conn, $_POST['up_email']);
+	$up_age = mysqli_real_escape_string($conn, $_POST['up_age']);
+	$up_gender	= mysqli_real_escape_string($conn, $_POST['up_gender']);
+	$up_height = mysqli_real_escape_string($conn, $_POST['up_height']);
+	$up_hobbies = mysqli_real_escape_string($conn, $_POST['up_hobbies']);
+	$up_dob = mysqli_real_escape_string($conn, $_POST['up_dob']);
+	$up_phone = mysqli_real_escape_string($conn, $_POST['up_phone']);
+	$up_married = mysqli_real_escape_string($conn, $_POST['up_married']);
+	$up_religion = mysqli_real_escape_string($conn, $_POST['up_religion']);
+	$up_about = mysqli_real_escape_string($conn, $_POST['up_about']);
+	
 	$up_address = mysqli_real_escape_string($conn, $_POST['up_address']);
 	$up_city = mysqli_real_escape_string($conn, $_POST['up_city']);
 	$up_state = mysqli_real_escape_string($conn, $_POST['up_state']);
 	$up_postcode = mysqli_real_escape_string($conn, $_POST['up_postcode']);
+	$up_nationality = mysqli_real_escape_string($conn, $_POST['up_nationality']);
 	
-	if(!empty($up_username) && !empty($up_email) && !empty($up_first_name) && !empty($up_last_name) && !empty($up_address) && !empty($up_city) && !empty($up_state) && !empty($up_postcode) && !empty($up_about)){
-		$up_query = "insert into user_profile (up_login_id,up_username,up_email,up_first_name,up_last_name,up_address,up_city,up_state,up_postcode,up_about)
-		values ('$up_login_id','$up_username','$up_email','$up_first_name','$up_last_name','$up_address','$up_city','$up_state','$up_postcode','$up_about')";
+	$up_10_school = mysqli_real_escape_string($conn, $_POST['up_10_school']);
+	$up_10_city = mysqli_real_escape_string($conn, $_POST['up_10_city']);
+	$up_10_state = mysqli_real_escape_string($conn, $_POST['up_10_state']);
+	$up_10_cgpa = mysqli_real_escape_string($conn, $_POST['up_10_cgpa']);
+	$up_10_board = mysqli_real_escape_string($conn, $_POST['up_10_board']);
+	$up_10_yop = mysqli_real_escape_string($conn, $_POST['up_10_yop']);
+	
+	$up_12_school = mysqli_real_escape_string($conn, $_POST['up_12_school']);
+	$up_12_city = mysqli_real_escape_string($conn, $_POST['up_12_city']);
+	$up_12_state = mysqli_real_escape_string($conn, $_POST['up_12_state']);
+	$up_12_cgpa = mysqli_real_escape_string($conn, $_POST['up_12_cgpa']);
+	$up_12_board = mysqli_real_escape_string($conn, $_POST['up_12_board']);
+	$up_12_yop = mysqli_real_escape_string($conn, $_POST['up_12_yop']);
+	
+	$up_ug_college = mysqli_real_escape_string($conn, $_POST['up_ug_college']);
+	$up_ug_city = mysqli_real_escape_string($conn, $_POST['up_ug_city']);
+	$up_ug_state = mysqli_real_escape_string($conn, $_POST['up_ug_state']);
+	$up_ug_cgpa = mysqli_real_escape_string($conn, $_POST['up_ug_cgpa']);
+	$up_ug_university = mysqli_real_escape_string($conn, $_POST['up_ug_university']);
+	$up_ug_yop = mysqli_real_escape_string($conn, $_POST['up_ug_yop']);
+	
+	$up_pg_college = mysqli_real_escape_string($conn, $_POST['up_pg_college']);
+	$up_pg_city = mysqli_real_escape_string($conn, $_POST['up_pg_city']);
+	$up_pg_state = mysqli_real_escape_string($conn, $_POST['up_pg_state']);
+	$up_pg_cgpa = mysqli_real_escape_string($conn, $_POST['up_pg_cgpa']);
+	$up_pg_university = mysqli_real_escape_string($conn, $_POST['up_pg_university']);
+	$up_pg_yop = mysqli_real_escape_string($conn, $_POST['up_pg_yop']);
+	
+	$up_work_designation = mysqli_real_escape_string($conn, $_POST['up_work_designation']);
+	$up_work_company = mysqli_real_escape_string($conn, $_POST['up_work_company']);
+	$up_work_address = mysqli_real_escape_string($conn, $_POST['up_work_address']);
+	$up_work_start = mysqli_real_escape_string($conn, $_POST['up_work_start']);
+	$up_work_end = mysqli_real_escape_string($conn, $_POST['up_work_end']);
+	$up_work_desc = mysqli_real_escape_string($conn, $_POST['up_work_desc']);
+	
+	$up_career = mysqli_real_escape_string($conn, $_POST['up_career']);
+	$up_por = mysqli_real_escape_string($conn, $_POST['up_por']);
+	$up_interest = mysqli_real_escape_string($conn, $_POST['up_interest']);
+	
+	// Setting up the timezone.
+	date_default_timezone_set('Asia/Calcutta');
+	$date=date("d M Y");
+	$time=date("H:i A");
+	$up_date = $time." ".$date;
+		
+
+	if(empty($_FILES['up_image']['tmp_name']) or empty($_FILES['up_work_resume']['tmp_name'])){
+	
+		$up_query = "insert into user_profile (
+		up_login_id,up_fullname,up_father,up_mother,up_email,up_age,up_gender,up_height,up_hobbies,up_dob,up_phone,up_married,up_religion,up_about,
+		up_address,up_city,up_state,up_postcode,up_nationality,
+		up_10_school,up_10_city,up_10_state,up_10_cgpa,up_10_board,up_10_yop,
+		up_12_school,up_12_city,up_12_state,up_12_cgpa,up_12_board,up_12_yop,
+		up_ug_college,up_ug_city,up_ug_state,up_ug_cgpa,up_ug_university,up_ug_yop,
+		up_pg_college,up_pg_city,up_pg_state,up_pg_cgpa,up_pg_university,up_pg_yop,
+		up_work_designation,up_work_company,up_work_address,up_work_start,up_work_end,up_work_desc,
+		up_career,up_por,up_interest,
+		up_date
+		)
+		values (
+		'$login_id','$up_fullname','$up_father','$up_mother','$up_email','$up_age','$up_gender','$up_height','$up_hobbies','$up_dob','$up_phone','$up_married','$up_religion','$up_about',
+		'$up_address','$up_city','$up_state','$up_postcode','$up_nationality',
+		'$up_10_school','$up_10_city','$up_10_state','$up_10_cgpa','$up_10_board','$up_10_yop',
+		'$up_12_school','$up_12_city','$up_12_state','$up_12_cgpa','$up_12_board','$up_12_yop',
+		'$up_ug_college','$up_ug_city','$up_ug_state','$up_ug_cgpa','$up_ug_university','$up_ug_yop',
+		'$up_pg_college','$up_pg_city','$up_pg_state','$up_pg_cgpa','$up_pg_university','$up_pg_yop',
+		'$up_work_designation','$up_work_company','$up_work_address','$up_work_start','$up_work_end','$up_work_desc',
+		'$up_career','$up_por','$up_interest',
+		'$up_date'
+		)";
 		if(mysqli_query($conn, $up_query)){
+			$query_first_entry = "select entry from login where (email='$email' and password='$password' and role='$role')";
+			$query_first_result = mysqli_query($conn, $query_first_entry);
+			$query_first_row = mysqli_fetch_assoc($query_first_result);
+			$new_entry = $query_first_row['entry']+1;
+			$quer_update = "update login set entry = '$new_entry' where (email='$email' and password='$password' and role='$role')";
+			mysqli_query($conn,$quer_update);
 			header('location:leaderboard.php');
 		}
+	}
+	else{
+		$target_directory = "files/";
+		$target_file = $target_directory.basename($_FILES["up_image"]["name"]);
+		$filetype = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+		$up_image = $target_directory.uniqid('', true).".".$filetype;
 		
+		$target_file = $target_directory.basename($_FILES["up_work_resume"]["name"]);
+		$filetype = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+		$up_work_resume = $target_directory.uniqid('', true).".".$filetype;
+		move_uploaded_file($_FILES["up_image"]["tmp_name"],$up_image);
+		move_uploaded_file($_FILES["up_work_resume"]["tmp_name"],$up_work_resume);
+		
+		$up_query = "insert into user_profile (
+		up_login_id,up_fullname,up_father,up_mother,up_email,up_age,up_gender,up_height,up_dob,up_phone,up_married,up_religion,up_about,up_image,
+		up_address,up_city,up_state,up_postcode,up_nationality,
+		up_10_school,up_10_city,up_10_state,up_10_cgpa,up_10_board,up_10_yop,
+		up_12_school,up_12_city,up_12_state,up_12_cgpa,up_12_board,up_12_yop,
+		up_ug_college,up_ug_city,up_ug_state,up_ug_cgpa,up_ug_university,up_ug_yop,
+		up_pg_college,up_pg_city,up_pg_state,up_pg_cgpa,up_pg_university,up_pg_yop,
+		up_work_designation,up_work_company,up_work_address,up_work_start,up_work_end,up_work_desc,up_work_resume,
+		up_career,up_por,up_interest,
+		up_date
+		)
+		values (
+		'$login_id','$up_fullname','$up_father','$up_mother','$up_email','$up_age','$up_gender','$up_height','$up_dob','$up_phone','$up_married','$up_religion','$up_about','$up_image',
+		'$up_address','$up_city','$up_state','$up_postcode','$up_nationality',
+		'$up_10_school','$up_10_city','$up_10_state','$up_10_cgpa','$up_10_board','$up_10_yop',
+		'$up_12_school','$up_12_city','$up_12_state','$up_12_cgpa','$up_12_board','$up_12_yop',
+		'$up_ug_college','$up_ug_city','$up_ug_state','$up_ug_cgpa','$up_ug_university','$up_ug_yop',
+		'$up_pg_college','$up_pg_city','$up_pg_state','$up_pg_cgpa','$up_pg_university','$up_pg_yop',
+		'$up_work_designation','$up_work_company','$up_work_address','$up_work_start','$up_work_end','$up_work_desc','$up_work_resume',
+		'$up_career','$up_por','$up_interest',
+		'$up_date'
+		)";
+		if(mysqli_query($conn, $up_query)){
+			$query_first_entry = "select entry from login where (email='$email' and password='$password' and role='$role')";
+			$query_first_result = mysqli_query($conn, $query_first_entry);
+			$query_first_row = mysqli_fetch_assoc($query_first_result);
+			$new_entry = $query_first_row['entry']+1;
+			$quer_update = "update login set entry = '$new_entry' where (email='$email' and password='$password' and role='$role')";
+			mysqli_query($conn,$quer_update);
+			header('location:leaderboard.php');
+		}
 	}
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +164,12 @@ if(isset($_POST['submit'])){
   <title>Registeration | JoBaskit</title>
 
   <?php require_once 'requires/top-scripts.php' ?>
+  <style>
+    .dz-message {
+      padding:2rem 1rem;
+    }
+
+  </style>
   
 </head>
 <body>
@@ -316,7 +454,7 @@ if(isset($_POST['submit'])){
             <div class="card-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h3 class="mb-0">Registeration or Application Form </h3>
+                  <h3 class="mb-0">Student Performa </h3>
                 </div>
                 <!-- <div class="col-4 text-right">
                   <a href="#!" class="btn btn-sm btn-primary">Settings</a>
@@ -324,53 +462,126 @@ if(isset($_POST['submit'])){
               </div>
             </div>
             <div class="card-body">
-              <form action="" method="post">
+              <form action="" method="post" enctype="multipart/form-data">
                 <h6 class="heading-small text-muted mb-4">Personal information</h6>
                 <div class="pl-lg-4">
-                  <!--<div class="row">
-                    <div class="col-lg-6">
+                  <div class="row">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username">Username</label>
-                        <input name="up_username" type="text" id="input-username" class="form-control" placeholder="Username">
+                        <label class="form-control-label" for="input-username">Full Name</label>
+                        <input name="up_fullname" type="text" id="input-username" class="form-control" placeholder="Full Name" value="<?php echo $user_name;?>">
                         <div class="valid-feedback">
                             Looks good!
                           </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username">Father Name</label>
+                        <input name="up_father" type="text" id="input-username" class="form-control" placeholder="Father Name">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-username">Mother Name</label>
+                        <input name="up_mother" type="text" id="input-username" class="form-control" placeholder="Mother Name">
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">Email address</label>
-                        <input name="up_email" type="email" id="input-email" class="form-control" placeholder="jesse@example.com">
+                        <input name="up_email" type="email" id="input-email" class="form-control" placeholder="jesse@example.com" value="<?php echo $email;?>">
                       </div>
                     </div>
-                  </div>-->
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="age">Age</label>
+                        <input name="up_age" type="number"  min=14 max=50 id="age" class="form-control" placeholder="Age">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="gender">Gender</label>
+                        <select class="form-control" name="up_gender">
+                          <option disabled>Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">First name</label>
-                        <input name="up_first_name" type="text" id="input-first-name" class="form-control" placeholder="First name">
+                        <label class="form-control-label" for="Height-username">Height</label>
+                        <input name="up_height" type="text" id="Height-username" class="form-control" placeholder="Height">
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input name="up_last_name" type="text" id="input-last-name" class="form-control" placeholder="Last name">
+                        <label for="Hobbies" class="form-control-label">Hobbies</label>
+                        <input name="up_hobbies" id="Hobbies" class="form-control" placeholder="Hobbies" type="text">
+                      </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="example-date-input" class="form-control-label">Date Of Birth</label>
+                        <input class="form-control" name="up_dob" type="date" value="2018-11-23" id="example-date-input">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="example-tel-input" class="form-control-label">Phone</label>
+                        <input class="form-control" type="tel" name="up_phone" placeholder="(+91)98888-89444" id="example-tel-input">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="Martial Status" class="form-control-label">Martial Status</label>
+                        <select class="form-control" name="up_married">
+                          <option disabled>Martial Status</option>
+                          <option value="married">Married</option>
+                          <option value="single">Single</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="Religion" class="form-control-label">Religion</label>
+                        <input class="form-control" name="up_religion" type="text" id="Religion" placeholder="Religion">
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
-                        <label for="example-tel-input" class="form-control-label">Phone</label>
-                        <input name="up_phone" class="form-control" type="tel" placeholder="(+91)98888-89444" id="example-tel-input">
+                        <label for="Job Description" class="form-control-label">About You</label>
+                        <textarea rows="3" name="up_about" id="About You" class="form-control" placeholder="About You"></textarea>
                       </div>
                     </div>
                     <div class="col-lg-6">
-                      <div class="form-group">
-                        <label for="example-date-input" class="form-control-label">Date Of Birth</label>
-                        <input name="up_dob" class="form-control" type="date" value="2018-11-23" id="example-date-input">
+                      <label for="image" class="form-control-label">Profile Picture</label>
+                      <!--<div class="dropzone dropzone-single mb-3" data-toggle="dropzone" data-dropzone-url="http://">
+                        <div class="fallback">
+                          <div class="custom-file">-->
+                            <input type="file" name="up_image" class="form-control">
+                          </div>
+                        <!--</div>
+                        <div class="dz-preview dz-preview-single">
+                          <div class="dz-preview-cover">
+                            <img class="dz-preview-img" src="..." alt="..." data-dz-thumbnail>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </div>-->
                   </div>
                 </div>
                 <hr class="my-5" />
@@ -387,22 +598,28 @@ if(isset($_POST['submit'])){
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label class="form-control-label" for="input-city">City</label>
                         <input name="up_city" type="text" id="input-city" class="form-control" placeholder="City">
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div class="form-group">
                         <label class="form-control-label" for="input-country">State</label>
                         <input name="up_state" type="text" id="input-country" class="form-control" placeholder="State">
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-md-3">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-country">Postal code</label>
-                        <input name="up_postcode" type="number" id="input-postal-code" class="form-control" placeholder="Postal code">
+                        <label class="form-control-label" for="postal-code">Postal Code</label>
+                        <input name="up_postcode" id="postal-code" class="form-control" placeholder="Postal Code" type="text">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="input-country"> Nationality</label>
+                        <input name="up_nationality" type="text" id="input-postal-code" class="form-control" placeholder=" Nationality">
                       </div>
                     </div>
                   </div>
@@ -413,24 +630,15 @@ if(isset($_POST['submit'])){
                 <h6 class="heading-small text-muted mb-4">Matriculation(10th)</h6>
                 <div class="pl-lg-4">
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-School">School</label>
+                        <label class="form-control-label" for="input-School">Institute Name</label>
                         <input name="up_10_school" type="text" id="input-School" class="form-control" placeholder="School Name">
                         <div class="valid-feedback">
                             Looks good!
                           </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="school-address">Address</label>
-                        <input name="up_10_address" id="school-address" class="form-control" placeholder="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="school-city">City</label>
@@ -443,31 +651,26 @@ if(isset($_POST['submit'])){
                         <input name="up_10_state" type="text" id="school-State" class="form-control" placeholder="State">
                       </div>
                     </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="school-postal-code">Postal code</label>
-                        <input name="up_10_postcode" type="number" id="school-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
+                    
                   </div>
 
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="CGPA">CGPA</label>
-                        <input name="up_10_cgpa" type="text" id="CGPA" class="form-control" placeholder="CGPA">
+                        <label class="form-control-label" for="Percentage">Percentage(%)</label>
+                        <input name="up_10_cgpa" type="text" id="Percentage" class="form-control" placeholder="Percentage(%)">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">Board/ University</label>
-                        <input name="up_10_board" type="text" class="form-control" placeholder="State University">
+                        <label class="form-control-label" for="input-email">Board</label>
+                        <input name="up_10_board" type="text" id="input-text" class="form-control" placeholder="State or Central Board">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="Year of Passing">Year of Passing</label>
-                        <input name="up_10_yop" class="form-control" type="month" id="Year_of_Passing">
+                        <input class="form-control" name="up_10_yop" type="month" id="Year_of_Passing">
                       </div>
                     </div>
                   </div>
@@ -477,25 +680,17 @@ if(isset($_POST['submit'])){
                 <!-- 12 Education -->
                 <h6 class="heading-small text-muted mb-4">Secondary Education(12th)</h6>
                 <div class="pl-lg-4">
+
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-School">School</label>
+                        <label class="form-control-label" for="input-School">Institute</label>
                         <input name="up_12_school" type="text" id="input-School" class="form-control" placeholder="School Name">
                         <div class="valid-feedback">
                             Looks good!
                           </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="school-address">Address</label>
-                        <input name="up_12_address" id="school-address" class="form-control" placeholder="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="school-city">City</label>
@@ -508,31 +703,26 @@ if(isset($_POST['submit'])){
                         <input name="up_12_state" type="text" id="school-State" class="form-control" placeholder="State">
                       </div>
                     </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="school-postal-code">Postal code</label>
-                        <input name="up_12_postcode" type="number" id="school-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
+
                   </div>
 
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="CGPA">CGPA</label>
-                        <input name="up_12_cgpa" type="text" id="CGPA" class="form-control" placeholder="CGPA">
+                        <label class="form-control-label" for="Percentage">Percentage(%)</label>
+                        <input name="up_12_cgpa" type="text" id="Percentage" class="form-control" placeholder="Percentage(%)">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-email">Board/ University</label>
-                        <input name="up_12_board" type="text" class="form-control" placeholder="State Board Of Technical Education">
+                        <label class="form-control-label" for="input-email">Board</label>
+                        <input name="up_12_board" type="text" id="input-text" class="form-control" placeholder="State or Central Board">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="Year of Passing">Year of Passing</label>
-                        <input name="up_12_yop" class="form-control" type="month" id="Year_of_Passing">
+                        <input class="form-control" name="up_12_yop" type="month" id="Year_of_Passing">
                       </div>
                     </div>
                   </div>
@@ -542,25 +732,17 @@ if(isset($_POST['submit'])){
                 <!-- UG Education -->
                 <h6 class="heading-small text-muted mb-4">Undergraduate(UG)</h6>
                 <div class="pl-lg-4">
+
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-College">College</label>
+                        <label class="form-control-label" for="input-College">Institute</label>
                         <input name="up_ug_college" type="text" id="input-College" class="form-control" placeholder="College Name">
                         <div class="valid-feedback">
                             Looks good!
                           </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="College-address">Address</label>
-                        <input name="up_ug_address" id="College-address" class="form-control" placeholder="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="College-city">City</label>
@@ -573,31 +755,26 @@ if(isset($_POST['submit'])){
                         <input name="up_ug_state" type="text" id="College-State" class="form-control" placeholder="State">
                       </div>
                     </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="College-postal-code">Postal code</label>
-                        <input name="up_ug_postcode" type="number" id="College-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
+
                   </div>
 
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="CollegeCGPA">CGPA</label>
-                        <input name="up_ug_cgpa" type="text" id="CollegeCGPA" class="form-control" placeholder="CGPA">
+                        <label class="form-control-label" for="CollegeCGPA">Percentage(%)</label>
+                        <input name="up_ug_cgpa" type="text" id="CollegeCGPA" class="form-control" placeholder="Percentage(%)">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="College-Board">Board/ University</label>
-                        <input name="up_ug_university" type="text" id="College-Board" class="form-control" placeholder="State University">
+                        <label class="form-control-label" for="College-Board">University</label>
+                        <input name="up_ug_university" type="text" id="College-Board" class="form-control" placeholder="Central or State University">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="CollegeYear of Passing">Year of Passing</label>
-                        <input name="up_ug_yop" class="form-control" type="month" id="CollegeYear_of_Passing">
+                        <input class="form-control" name="up_ug_yop" type="month" id="CollegeYear_of_Passing">
                       </div>
                     </div>
                   </div>
@@ -608,24 +785,15 @@ if(isset($_POST['submit'])){
                 <h6 class="heading-small text-muted mb-4">Postgraduate(PG)</h6>
                 <div class="pl-lg-4">
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-College">College</label>
+                        <label class="form-control-label" for="input-College">Institute</label>
                         <input name="up_pg_college" type="text" id="input-College" class="form-control" placeholder="College Name">
                         <div class="valid-feedback">
                             Looks good!
                           </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="College-address">Address</label>
-                        <input name="up_pg_address" id="College-address" class="form-control" placeholder="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="College-city">City</label>
@@ -638,31 +806,25 @@ if(isset($_POST['submit'])){
                         <input name="up_pg_state" type="text" id="College-State" class="form-control" placeholder="State">
                       </div>
                     </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="College-postal-code">Postal code</label>
-                        <input name="up_pg_postcode" type="number" id="College-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="CollegeCGPA">CGPA</label>
-                        <input name="up_pg_cgpa" type="text" id="CollegeCGPA" class="form-control" placeholder="CGPA">
+                        <label class="form-control-label" for="CollegeCGPA">Percentage(%)</label>
+                        <input name="up_pg_cgpa" type="text" id="CollegeCGPA" class="form-control" placeholder="Percentage(%)">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="College-Board">Board/ University</label>
-                        <input name="up_pg_university" type="text" id="College-Board" class="form-control" placeholder="State University">
+                        <label class="form-control-label" for="College-Board">University</label>
+                        <input name="up_pg_university" type="text" id="College-Board" class="form-control" placeholder="Central or State University">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="CollegeYear of Passing">Year of Passing</label>
-                        <input class="form-control" type="month" id="CollegeYear_of_Passing">
+                        <input class="form-control" name="up_pg_yop" type="month" id="CollegeYear_of_Passing">
                       </div>
                     </div>
                   </div>
@@ -691,7 +853,7 @@ if(isset($_POST['submit'])){
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="work_company_address">Address</label>
-                        <input name="up_work_address" type="number" id="work_company_address" class="form-control" placeholder="Address with city, state">
+                        <input name="up_work_address" type="text" id="work_company_address" class="form-control" placeholder="Address with city, state">
                       </div>
                     </div>
                   </div>
@@ -717,8 +879,8 @@ if(isset($_POST['submit'])){
                     </div>
                     <div class="col-lg-12">
                       <div class="form-group">
-                        <label for="Job Description" name="up_work_desc"class="form-control-label">Job Description</label>
-                        <textarea rows="5" name="Job Description" id="Job Description" class="form-control" placeholder="Job Description"></textarea>
+                        <label for="Job Description" class="form-control-label">Job Description</label>
+                        <textarea rows="5" name="up_work_desc" id="Job Description" class="form-control" placeholder="Job Description"></textarea>
                       </div>
                     </div>
                             
@@ -726,6 +888,35 @@ if(isset($_POST['submit'])){
                   </div>
 
                 </div>
+
+                <!-- Work Experience -->
+                <h6 class="heading-small text-muted mb-4">Career & Skills</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="Designation">Career Objective</label>
+                        <input name="up_career" type="text" id="Designation" class="form-control" placeholder="Career Objective">
+                        <div class="valid-feedback">
+                            Looks good!
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="Position name">Position of Responsibilities</label>
+                        <input name="up_por" id="Position name" class="form-control" placeholder="Position of Responsibilities" type="text">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="Areas">Areas of Interest</label>
+                        <input name="up_interest" id="Areas" class="form-control" placeholder="Areas of Interest" type="text">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <hr class="my-5" />
 
                 <div class="row">

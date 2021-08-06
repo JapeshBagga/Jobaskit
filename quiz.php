@@ -1,16 +1,22 @@
 <?php
-  require_once "identification.php";
-   if(isset($_REQUEST["eid"]))
-     $quiz_id=$_REQUEST["eid"];
+require_once "identification.php";
+$user_name=$row['name'];
+	if(isset($_REQUEST["eid"]))
+		$quiz_id=$_REQUEST["eid"];
 	else
-     header('location:../index.php');
+		header('location:../index.php');
 
-  $quiz_id=1;
-  $query_quiz_time="select quiz_title,quiz_time from quiz_topic where quiz_id=$quiz_id";
-  $quiz_time_result = mysqli_query($conn, $query_quiz_time);
-  $quiz_time_row = mysqli_fetch_assoc($quiz_time_result);
-  $quiz_time = $quiz_time_row['quiz_time'];
-  $quiz_name = $quiz_time_row['quiz_title'];
+	$query_quiz_time="select quiz_title,quiz_time from quiz_topic where quiz_id=$quiz_id";
+	$quiz_time_result = mysqli_query($conn, $query_quiz_time);
+	$quiz_time_row = mysqli_fetch_assoc($quiz_time_result);
+	$quiz_time = $quiz_time_row['quiz_time'];
+	$quiz_name = $quiz_time_row['quiz_title'];
+  
+	$query_score="select score_id from score where (score_quiz_id=$quiz_id and score_login_id=$login_id)";
+	$result_score = mysqli_query($conn, $query_score);
+	$row_score = mysqli_num_rows($result_score);
+	if($row_score >=1 )
+		header('location:leaderboard.php');
   /*
   if(isset($_POST["submit"])){
     $quiz_id=$_POST['quiz_id'];
@@ -37,9 +43,6 @@
   */
 ?>
 
-<?php
-require_once "identification.php";
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,7 +91,7 @@ require_once "identification.php";
              <li class="nav-item active">
               <a class="nav-link" href="aptitude-quizes.php">
                 <i class="ni ni-bullet-list-67"></i>
-                <span class="nav-link-text">Aptitude Quiz</span>
+                <span class="nav-link-text">Quizes</span>
               </a>
         </div>
       </div>
@@ -283,7 +286,7 @@ require_once "identification.php";
               <div class="media align-items-center">
                     <i class="ni ni-single-02"></i>
                   <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">User@Japesh</span>
+                    <span class="mb-0 text-sm  font-weight-bold"><?php echo $user_name;?></span>
                   </div>
               </div>
               </a>
@@ -291,7 +294,7 @@ require_once "identification.php";
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="#!" class="dropdown-item">
+                <a href="registration.php" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -308,7 +311,7 @@ require_once "identification.php";
                   <span>Support</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#!" class="dropdown-item">
+                <a href="logout.php" class="dropdown-item">
                   <i class="ni ni-user-run"></i>
                   <span>Logout</span>
                 </a>
@@ -328,7 +331,7 @@ require_once "identification.php";
               <div class="col-lg-8">
 			  
 			  <h2 class="h2 text-white"><?php echo $quiz_name;?></h2>
-			  <p class="h4 text-white" name="timer" id="demo"></p>
+			  <!--<p class="h4 text-white" name="timer" id="demo"></p>-->
 			  </div>
               <div class="col-lg-2">
               </div>
@@ -342,70 +345,82 @@ require_once "identification.php";
     <div class="container-fluid mt--6">
         <div class="row">
             <div class="col-lg-9 order-xl-1">
-                <div class="card" id="quiz">
-                    <div class="card-header">
-                        <h4  id="question">Question</h4>
-                    </div>
-                    <div class="card-body">
-                        <!-- <h6 class="heading-small text-muted mb-4">Introduce Yourself</h6> -->
-                        <div class="pl-lg-10">
-                            <!-- Description -->
-                            <div class="pl-lg-4">
-                                <div class="row" id="output">
-                                    <div class="col-lg-6 col-6">
-										<input type="radio" id="a" name="answer" class="answer">
-										<label id="a_text" for="a">dd</label>
-                                    </div>
-                                    <div class="col-lg-6 col-6">
-										<input type="radio" id="b" name="answer" class="answer">
-										<label id="b_text" for="b">dd</label>
-                                    </div>
-                                    <div class="col-lg-6 col-6">
-										<input type="radio" id="c" name="answer" class="answer">
-										<label id="c_text" for="c">dd</label>
-                                    </div>
-                                    <div class="col-lg-6 col-6">
-										<input type="radio" id="b" name="answer" class="answer">
-										<label id="d_text" for="d">dd</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer text-right">
-					    <button type="submit" id="submit" name="submit" class="btn btn-custon-rounded-three btn-primary">Save and Next</button>
-                    </div> 
-				</div> 
+				<form action="quiz-result.php" class="form" method="post">
+					<?php
+						$i=1;
+						$qust_query = "select qust_id, question, opt1, opt2, opt3, opt4 from quiz_qust where quiz_id=$quiz_id";
+						$qust_result = mysqli_query($conn, $qust_query);
+						while($qust_row = mysqli_fetch_assoc($qust_result)){
+					?>
+					<div class="card">
+						<div class="card-header">
+							<h4  id="question"><?php echo $i; ?>. <?php echo $qust_row['question']; ?></h4>
+						</div>
+						<div class="card-body">
+							<!-- <h6 class="heading-small text-muted mb-4">Introduce Yourself</h6> -->
+							<div class="pl-lg-10">
+								<!-- Description -->
+								<div class="pl-lg-4">
+									<div class="row" id="output">
+										<div class="col-lg-6 col-6 mb-2">
+											<input type="radio" id="a" name="<?php echo $qust_row['qust_id'];?>" value="a">
+											<label id="a_text" for="a"><?php echo $qust_row['opt1']; ?></label>
+										</div>
+										<div class="col-lg-6 col-6 mb-2">
+											<input type="radio" id="b" name="<?php echo $qust_row['qust_id'];?>" value="b">
+											<label id="b_text" for="b"><?php echo $qust_row['opt2']; ?></label>
+										</div>
+										<div class="col-lg-6 col-6">
+											<input type="radio" id="c" name="<?php echo $qust_row['qust_id'];?>" value="c">
+											<label id="c_text" for="c"><?php echo $qust_row['opt3']; ?></label>
+										</div>
+										<div class="col-lg-6 col-6">
+											<input type="radio" id="b" name="<?php echo $qust_row['qust_id'];?>" value="d">
+											<label id="d_text" for="d"><?php echo $qust_row['opt4']; ?></label>
+										</div>
+									</div>
+									<hr/>
+									<span>
+									<div class="d-inline">
+										<input name="flag_qust<?php echo $qust_row['qust_id'];?>" type="checkbox">
+										<label>Flag Question</label>
+									</div>
+									<div class="d-inline p-6">
+										<input name="flag_completed<?php echo $qust_row['qust_id'];?>" type="checkbox">
+										<label>Mark as completed</label>
+									</div>
+									<div class="d-inline">
+										<input name="flag_wrong<?php echo $qust_row['qust_id'];?>" type="checkbox" >
+										<label>Mark as wrong question</label>
+									</div>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php
+						$i=$i+1;
+						}
+					?>
+					<div class="text-right">
+						<input type="hidden" name="quiz_id" value="<?php echo $quiz_id;?>" >
+						<button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Submit</button>
+					</div>					
+			  </form>
             </div>
 			
-	<?php 
-	require_once 'connection.php';
-	$query = "select question, opt1, opt2, opt3, opt4, correct1,correct2 from quiz_qust where quiz_id=$quiz_id";
-	$result = mysqli_query($conn, $query);
-	?>
-    <script >
+    <script >/*
         const quizData = [
-		
-		<?php
-		
-		while($row = mysqli_fetch_assoc($result)){
-		
-		?>
-		
             {
                 question:
-                "<?php echo $row['question'];?>",
-                a: "<?php echo $row['opt1'];?>",
-                b: "<?php echo $row['opt2'];?>",
-                c: "<?php echo $row['opt3'];?>",
-                d: "<?php echo $row['opt4'];?>",
-                correct: "<?php echo $row['correct1'];?>",
-				correct2: "<?php echo $row['correct2'];?>"
+                "",
+                a: "",
+                b: "",
+                c: "",
+                d: "",
+                correct: "",
+				correct2: ""
             },
-			
-		<?php
-		}
-		?>
        
         ];
 
@@ -479,8 +494,8 @@ require_once "identification.php";
 					  method: "post",
 					  data: {
 						score_data: score,
-						quiz_id:"<?php echo '1'; ?>",
-						login_id:"<?php echo '1'; ?>",
+						quiz_id:"",
+						login_id:"",
 					  },
 					  success: function (response) {
 						quiz.innerHTML = "Successfully submitted your answers.";
@@ -496,8 +511,8 @@ require_once "identification.php";
 					  method: "post",
 					  data: {
 						score_data: score,
-						quiz_id:"<?php echo '1'; ?>",
-						login_id:"<?php echo '1'; ?>",
+						quiz_id:"<",
+						login_id:"",
 					  },
 					  success: function (response) {
 						quiz.innerHTML = "Successfully submitted your answers.";
@@ -508,24 +523,38 @@ require_once "identification.php";
             }
             });
 
-  
+  */
     </script>
 			
-			
-			
-			<!--
             <div class="col-lg-3 order-xl-1">
                 <table style="border: solid">
-                    <tr>
-                        <td style="background-color:black; color:white; border: 1px black solid">Q1</td>
-                        <td>Q2</td>
-                        <td>Q3</td>
-                        <td>Q4</td>
-                        <td>Q5</td>
-                        <td>Q6</td>
-
-                    </tr>
-                    <tr>
+				
+					<tr>
+					<?php
+						$sql = mysqli_query($conn,"SELECT qust_id FROM quiz_qust ORDER BY qust_id DESC LIMIT 20"); 
+						$i = 0;
+						// Establish the output variable
+						$dyn_table = '<table border="1" cellpadding="20">';
+						$q = 1;
+						while($row = mysqli_fetch_array($sql)){ 
+							
+							$id = $row["qust_id"];
+							
+							
+							if ($i % 4 == 0) { // if $i is divisible by our target number (in this case "3")
+								$dyn_table .= '<tr><td>' . 'Q '.$q . '</td>';
+							} else {
+								$dyn_table .= '<td>' . 'Q '.$q . '</td>';
+							}
+							$i++;
+							$q++;
+						}
+						$dyn_table .= '</tr></table>';
+					
+					?>
+                        <?php echo $dyn_table; ?>
+					</tr>
+                    <!--<tr>
                         <td>Q1</td>
                         <td>Q2</td>
                         <td>Q3</td>
@@ -551,108 +580,15 @@ require_once "identification.php";
                         <td>Q5</td>
                         <td>Q6</td>
 
-                    </tr>
-                    <tr>
-                        <td>Q1</td>
-                        <td>Q2</td>
-                        <td>Q3</td>
-                        <td>Q4</td>
-                        <td>Q5</td>
-                        <td>Q6</td>
-
-                    </tr>
-                    <tr>
-                        <td>Q1</td>
-                        <td>Q2</td>
-                        <td>Q3</td>
-                        <td>Q4</td>
-                        <td>Q5</td>
-                        <td>Q6</td>
-
-                    </tr>
-
+                    </tr>-->
                 </table>
                 <br/><br/>
-                <div class="custom-control custom-checkbox mb-3">
-                    <input class="custom-control-input" name="flag_qust" type="checkbox">
-                    <label class="custom-control-label" for="customCheck1">Flag Question</label>
-                </div>
-                <div class="custom-control custom-checkbox mb-3">
-                    <input class="custom-control-input" name="flag_completed" type="checkbox" >
-                    <label class="custom-control-label" for="customCheck2">Mark as completed</label>
-                </div>
-                <div class="custom-control custom-checkbox mb-3">
-                    <input class="custom-control-input" name="flag_wrong" type="checkbox" checked>
-                    <label class="custom-control-label" for="customCheck2">Mark as wrong question</label>
-                </div>
+                
             </div>
-			-->
+			
         </div>       
     </div>
  </div>
-
-
-
-	<script>
-	
-			/*var countDownDate = new Date();
-			countDownDate.setMinutes(countDownDate.getMinutes()+<?php echo $quiz_time;?>);
-			var x = setInterval(function() {
-			  var now = new Date().getTime();
-			  var distance = countDownDate - now;
-			  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-			  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-			  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-			  if(hours=="0"){
-				document.getElementById("demo").innerHTML = minutes + " M : " + seconds + " S ";
-			    
-			  }
-			  else{
-				  document.getElementById("demo").innerHTML =  hours + " H : "+ minutes + " M : " + seconds + " S ";
-			  }if (distance < 0) {
-				clearInterval(x);
-				document.getElementById("demo").innerHTML ="Time Up!";
-				window.location.href="leaderboard.php";
-			  }
-			}, 1000);
-			
-			
-			
-		/*
-        var totalSeconds = 0;
-        setInterval(setTime, 1000);
-
-        function setTime()
-        {
-            ++totalSeconds;
-            var sec=pad(totalSeconds%60);
-            var min=pad(parseInt(totalSeconds/60));
-			document.getElementById("demo2").value = min + " M : " + sec + " S ";
-        }
-
-        function pad(val)
-        {
-            var valString = val + "";
-            if(valString.length < 2)
-            {
-                return "0" + valString;
-            }
-            else
-            {
-                return valString;
-            }
-        }
-		
-		function nt(){
-		document.getElementById("notify").innerHTML="Loading...Please Wait...";
-		var x = document.getElementById("notify");
-		x.style.background="darkorange";
-		x.style.padding="10px";
-		x.style.color="black";
-		return true;
-		}
-		*/
-		</script>
   <?php require_once 'requires/end-scripts.php' ?>
 </body>
 

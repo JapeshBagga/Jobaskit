@@ -120,12 +120,12 @@
       <hr class="d-lg-none" />
       <ul class="navbar-nav align-items-lg-center ml-lg-auto">
         <li class="nav-item d-none d-lg-block ml-lg-4">
-          <a href="sign-up.php" class="btn btn-neutral btn-icon">
-            <!-- <span class="btn-inner--icon">
+          <!-- <a href="sign-up.php" class="btn btn-neutral btn-icon">
+            <span class="btn-inner--icon">
               <i class="fas fa-shopping-cart mr-2"></i>
-            </span> -->
+            </span>
             <span class="nav-link-inner--text">SIGN-UP</span>
-          </a>
+          </a> -->
 
         </li>
       </ul>

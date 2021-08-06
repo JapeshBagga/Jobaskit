@@ -4,14 +4,14 @@ $user_name=$row['name'];
 $query_first_entry = "select entry from login where (email='$email' and password='$password' and role='$role')";
 $query_first_result = mysqli_query($conn, $query_first_entry);
 $query_first_row = mysqli_fetch_assoc($query_first_result);
-if($query_first_row['entry'] == 0){
-	header("location:profile-registration.php");
-}
-else{
+// if($query_first_row['entry'] == 0){
+// 	header("location:registration.php");
+// }
+// else{
 	$new_entry = $query_first_row['entry']+1;
 	$quer_update = "update login set entry = '$new_entry' where (email='$email' and password='$password' and role='$role')";
 	mysqli_query($conn,$quer_update);
-}
+// }
 
 $query_own = "select avg(score_data) from score where score_login_id=$login_id";
 $query_own_result = mysqli_query($conn, $query_own);
@@ -261,7 +261,7 @@ $percentile = $row_own['avg(score_data)'];
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="#!" class="dropdown-item">
+                <a href="registration.php" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>

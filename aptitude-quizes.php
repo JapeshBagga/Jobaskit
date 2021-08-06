@@ -1,5 +1,6 @@
 <?php
 require_once "identification.php";
+$user_name=$row['name'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -235,7 +236,7 @@ require_once "identification.php";
               <div class="media align-items-center">
                     <i class="ni ni-single-02"></i>
                   <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">User@Japesh</span>
+                    <span class="mb-0 text-sm  font-weight-bold"><?php echo $user_name;?></span>
                   </div>
               </div>
               </a>
@@ -243,7 +244,7 @@ require_once "identification.php";
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="#!" class="dropdown-item">
+                <a href="registration.php" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -260,7 +261,7 @@ require_once "identification.php";
                   <span>Support</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#!" class="dropdown-item">
+                <a href="logout.php" class="dropdown-item">
                   <i class="ni ni-user-run"></i>
                   <span>Logout</span>
                 </a>
@@ -317,8 +318,8 @@ require_once "identification.php";
 					<thead class="thead-light">
 						<tr>
 						  <th scope="col" class="sort" data-sort="name">Quizes</th>
-						  <!--<th scope="col" class="sort" data-sort="date-upload">Date Uploaded</th>
-						  <th scope="col" class="sort" data-sort="status">Deadline</th>
+						  <th scope="col" class="sort" data-sort="date-upload">Status</th>
+						  <!--<th scope="col" class="sort" data-sort="status">Deadline</th>
 						  <th scope="col" class="sort" data-sort="completion">Time-Limit</th>-->
 						  <th scope="col"></th>
 						</tr>
@@ -327,6 +328,15 @@ require_once "identification.php";
 					<?php
 						while($quiz_row = mysqli_fetch_assoc($quiz_result))
 						{
+							$quiz_id=$quiz_row['quiz_id'];
+							$query_score="select score_id from score where (score_quiz_id=$quiz_id and score_login_id=$login_id)";
+							$result_score = mysqli_query($conn, $query_score);
+							$row_score = mysqli_num_rows($result_score);
+							if($row_score >=1)
+								$attempt="Attempted";
+							else
+								$attempt="Not Attempted";
+	
 					?>
 						<tr>
 						  <th scope="row">
@@ -339,18 +349,18 @@ require_once "identification.php";
 							  </div>
 							</div>
 						  </th>
-						  <!--<td class="date-upload">
-							<?php #echo $quiz_row['quiz_date'];?>
+						  <td class="date-upload">
+							<?php echo $attempt;?>
 						  </td>
-						  <td>
+						  <!--<td>
 							<span class="badge badge-dot mr-4">
 							  <i class="bg-warning"></i>
-							  <span class="status"><?php echo $quiz_row['quiz_deadline'];?></span>
+							  <span class="status"><?php #echo $quiz_row['quiz_deadline'];?></span>
 							</span>
 						  </td>
 						  <td>
 							<div class="d-flex align-items-center">
-							  <span class="completion mr-2"><?php echo $quiz_row['quiz_time'];?> Minutes</span>
+							  <span class="completion mr-2"><?php #echo $quiz_row['quiz_time'];?> Minutes</span>
 							  <div>
 								<div class="progress">
 								  <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>

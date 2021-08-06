@@ -9,9 +9,8 @@ if(mysqli_num_rows($intro_result) <=0){
 }
 if(isset($_POST['submit'])){
 	$intro_data = mysqli_real_escape_string($conn, $_POST['intro_data']);
-	$intro_comments = mysqli_real_escape_string($conn, $_POST['intro_comments']);
 	
-		$intro_query = "update introduction set intro_data='$intro_data',intro_comments='$intro_comments' where intro_login_id=$login_id";
+		$intro_query = "update introduction set intro_data='$intro_data' where intro_login_id=$login_id";
 		if(mysqli_query($conn, $intro_query))
 			echo "<script>alert('Successfull');</script>";
 		else
@@ -260,7 +259,7 @@ if(isset($_POST['submit'])){
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="#!" class="dropdown-item">
+                <a href="registration.php" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -334,10 +333,25 @@ if(isset($_POST['submit'])){
                         <div class="form-group">
                             <textarea rows="10" name="intro_data" class="form-control" placeholder="A few words about you. Starting from My Name is..(Upto 300 words)"><?php echo $intro_row['intro_data'];?></textarea>
                         </div>
-                        <h6 class="heading-small text-muted mt-4">Comments</h6>
-                        <div class="form-group">
-                          <textarea rows="5" name="intro_comments" class="form-control" placeholder=""><?php echo $intro_row['intro_comments'];?></textarea>
+						
+						<h6 class="heading-small text-muted mt-4">Comments</h6>
+                        <!-- List group -->
+                        <div class="list-group list-group-flush">
+                          <a href="#" class="list-group-item list-group-item-action flex-column align-items-start py-4 px-4">
+                            <div class="d-flex w-100 justify-content-between">
+                              <div>
+                                <div class="d-flex w-100 align-items-center">
+                                  <!-- <img src="../assets/img/theme/team-1.jpg" alt="Image placeholder" class="avatar avatar-xs mr-2" />-->
+                                  <h5 class="mb-1"><?php echo $intro_row['intro_comments'];?></h5>
+                                </div>
+                              </div>
+                              <small>2 hrs ago</small>
+                            </div>
+                            <!--<h4 name="intro_comments" class="mt-3 mb-1"> </h4>-->
+                          </a>
                         </div>
+						
+						
                       <div class="card-footer text-right">
                         <button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Submit</button>
                       </div>

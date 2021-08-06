@@ -76,12 +76,12 @@ if (isset($_POST['submit'])){
         <hr class="d-lg-none" />
         <ul class="navbar-nav align-items-lg-center ml-lg-auto">
           <li class="nav-item d-none d-lg-block ml-lg-4">
-            <a href="index.php" class="btn btn-neutral btn-icon">
-              <!-- <span class="btn-inner--icon">
+            <!-- <a href="index.php" class="btn btn-neutral btn-icon">
+              <span class="btn-inner--icon">
                 <i class="fas fa-shopping-cart mr-2"></i>
-              </span> -->
+              </span>
               <span class="nav-link-inner--text">LOGIN</span>
-            </a>
+            </a> -->
           </li>
         </ul>
       </div>
@@ -154,14 +154,14 @@ if (isset($_POST['submit'])){
                     <input name="password" class="form-control" placeholder="Password" type="password">
                   </div>
                 </div>
-                <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div>
+                <!-- <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div> -->
                 
                 <div class="row my-4">
                   <div class="col-12">
                     <div class="custom-control custom-control-alternative custom-checkbox">
                       <input class="custom-control-input" id="customCheckRegister" type="checkbox">
                       <label class="custom-control-label" for="customCheckRegister">
-                        <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
+                        <span class="text-muted">I agree with the <a href="#!" class="text-warning">Privacy Policy</a></span>
                       </label>
                     </div>
                   </div>
