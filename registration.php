@@ -4,8 +4,8 @@ $user_name=$row['name'];
 $sel_up = "select up_login_id from user_profile where up_login_id=$login_id";
 $sel_result = mysqli_query($conn, $sel_up);
 $rowcount= mysqli_num_rows($sel_result);
-if($rowcount>=1)
-	header('location:leaderboard.php');
+// if($rowcount>=1)
+// 	header('location:leaderboard.php');
 if(isset($_POST['submit'])){
 	$up_fullname = mysqli_real_escape_string($conn, $_POST['up_fullname']);
 	$up_father = mysqli_real_escape_string($conn, $_POST['up_father']);
