@@ -8,9 +8,14 @@ if(mysqli_num_rows($intro_result) <=0){
 	mysqli_query($conn, $intro_query);
 }
 if(isset($_POST['submit'])){
+	
+	// Setting up the timezone.
+	date_default_timezone_set('Asia/Calcutta');
+	$intro_date=date("d M Y");
+	
 	$intro_data = mysqli_real_escape_string($conn, $_POST['intro_data']);
 	
-		$intro_query = "update introduction set intro_data='$intro_data' where intro_login_id=$login_id";
+		$intro_query = "update introduction set intro_data='$intro_data',intro_date='$intro_date' where intro_login_id=$login_id";
 		if(mysqli_query($conn, $intro_query))
 			echo "<script>alert('Successfull');</script>";
 		else
@@ -259,7 +264,7 @@ if(isset($_POST['submit'])){
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="registration.php" class="dropdown-item">
+                <a href="#!" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -301,9 +306,9 @@ if(isset($_POST['submit'])){
              <div class="col-lg-6 col-5 text-right">
                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                  <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                   <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                   <!--<li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>-->
                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
-                   <li class="breadcrumb-item active" aria-current="page">Introduction</li>
+                   <!--<li class="breadcrumb-item active" aria-current="page">Introduction</li>-->
                  </ol>
                </nav>
                <!-- <a href="#" class="btn btn-sm btn-neutral">New</a>
@@ -314,7 +319,7 @@ if(isset($_POST['submit'])){
        </div>
     </div>
    <?php
-	$intro_query = "select intro_data,intro_comments from introduction where intro_login_id = $login_id";
+	$intro_query = "select intro_data,intro_comments,intro_date from introduction where intro_login_id = $login_id";
 	$intro_result=mysqli_query($conn, $intro_query);
 	$intro_row = mysqli_fetch_assoc($intro_result);
    ?>
@@ -345,7 +350,7 @@ if(isset($_POST['submit'])){
                                   <h5 class="mb-1"><?php echo $intro_row['intro_comments'];?></h5>
                                 </div>
                               </div>
-                              <small>2 hrs ago</small>
+                              <small><?php echo $intro_row['intro_date'];?></small>
                             </div>
                             <!--<h4 name="intro_comments" class="mt-3 mb-1"> </h4>-->
                           </a>

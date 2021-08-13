@@ -294,7 +294,7 @@ $user_name=$row['name'];
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="registration.php" class="dropdown-item">
+                <a href="#!" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -390,7 +390,7 @@ $user_name=$row['name'];
 										<label>Mark as completed</label>
 									</div>
 									<div class="d-inline">
-										<input name="flag_wrong<?php echo $qust_row['qust_id'];?>" type="checkbox" >
+										<input name="<?php echo $qust_row['qust_id'];?>" type="radio" >
 										<label>Mark as wrong question</label>
 									</div>
 									</span>
@@ -404,7 +404,7 @@ $user_name=$row['name'];
 					?>
 					<div class="text-right">
 						<input type="hidden" name="quiz_id" value="<?php echo $quiz_id;?>" >
-						<button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Submit</button>
+						<button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Save</button>
 					</div>					
 			  </form>
             </div>
@@ -531,7 +531,7 @@ $user_name=$row['name'];
 				
 					<tr>
 					<?php
-						$sql = mysqli_query($conn,"SELECT qust_id FROM quiz_qust ORDER BY qust_id DESC LIMIT 20"); 
+						$sql = mysqli_query($conn,"SELECT qust_id FROM quiz_qust WHERE quiz_id='$quiz_id' ORDER BY qust_id"); 
 						$i = 0;
 						// Establish the output variable
 						$dyn_table = '<table border="1" cellpadding="20">';
@@ -541,7 +541,7 @@ $user_name=$row['name'];
 							$id = $row["qust_id"];
 							
 							
-							if ($i % 4 == 0) { // if $i is divisible by our target number (in this case "3")
+							if ($i % 5 == 0) { // if $i is divisible by our target number (in this case "3")
 								$dyn_table .= '<tr><td>' . 'Q '.$q . '</td>';
 							} else {
 								$dyn_table .= '<td>' . 'Q '.$q . '</td>';

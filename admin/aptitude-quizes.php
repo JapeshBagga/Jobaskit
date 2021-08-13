@@ -3,7 +3,7 @@ require_once "identification.php";
 $subrole = $row['subrole'];
 $user_name = $row['name'];
 if(empty($_SESSION['message_quiz'])){
-	$msg= "Try Again";
+	$msg= "Insert Quizes";
 }
 else{
 	$msg = $_SESSION['message_quiz'];
@@ -291,16 +291,16 @@ else{
              <div class="col-lg-6 col-7">
                <h6 class="h2 text-white d-inline-block mb-0"><?php 
 			   echo $msg;
-			   $_SESSION['message_quiz']="Insert Quizes";
+			   $_SESSION['message_quiz']="Insert Quizes & Questions";
 			   ?></h6>
                
              </div>
              <div class="col-lg-6 col-5 text-right">
                <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                  <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                   <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                   <!--<li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>-->
                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
-                   <li class="breadcrumb-item active" aria-current="page">Aptitude Quiz</li>
+                   <!--<li class="breadcrumb-item active" aria-current="page"> Quiz</li>-->
                  </ol>
                </nav>
                <!-- <a href="#" class="btn btn-sm btn-neutral">New</a>
@@ -319,14 +319,10 @@ else{
            <div class="row align-items-center mt-4">
               <div class="col-lg-3 col-3">
                 <div class="form-group">
-                  <select class="form-control" id="series" data-toggle="select" required>
-                    <option value="0" >Quiz Series</option>
-                    <option value="1" >Aptitude</option>
-                    <option value="2" >Technical</option>
-                    <option value="3" >General Knowledge</option>
-                    <option value="4" >Newspaper</option>
-					<option value="0" >Other</option>
-                  </select>
+					<input class="form-control" type="search" placeholder="Series" id="search-series" required>
+					<div class="list-group" id="show-list-series">
+						<!-- Here autocomplete list will be display -->
+					</div>
                 </div>
               </div>
               <div class="col-lg-3">
@@ -357,22 +353,24 @@ else{
          </div>
        </div>
     </div>
-
-    <!-- Quiz content -->
+    
+     <!-- Quiz content -->
     <div class="container-fluid mt--5">
         <div class="row">
             <div class="col-lg-12 order-xl-1">
-              <form id="formvalue" action="" class="form" method="POST" autocomplete="off">
+              <form id="formvalue" class="form" method="POST" autocomplete="off">
+				<div id="dynamic_field">
+				<div>
                 <div class="card">
                   <div class="card-header" style="padding-bottom: 0rem;">
                     <div class="row">
                       <div class="col-9 text-right">
                         <div class="form-group">
-                          <input class="form-control" type="text" name="qust" placeholder="Question" required>
+                          <input class="form-control" type="text" name="qust[]" placeholder="Question" required>
                         </div>
                       </div>
                       <div class="col-3 text-right">
-                        <select class="form-control" name="difficulty-level" id="exampleFormControlSelect1">
+                        <select class="form-control" name="difficulty-level[]" id="exampleFormControlSelect1">
                           <option value="0">Difficulty Level</option>
 						  <option value="1">Easy</option>
                           <option value="2">Medium</option>
@@ -391,26 +389,26 @@ else{
                             <div class="row">
                                 <div class="col-lg-6 col-6">
                                   <div class="custom-control custom-checkbox mb-5">
-                                    <input class="custom-control-input" id="customCheck1" name="a" value="a" type="checkbox">
-                                    <label class="custom-control-label" for="customCheck1"><input class="form-control" type="search" name="opt1" placeholder="Enter Option A" id="example-search-input" required></label>
+                                    <input class="custom-control-input" id="customCheck1" name="a[]" value="a" type="checkbox">
+                                    <label class="custom-control-label" for="customCheck1"><input class="form-control" type="search" name="opt1[]" placeholder="Enter Option A" id="example-search-input" required></label>
                                   </div>
                                 </div>
                                 <div class="col-lg-6 col-6">
                                   <div class="custom-control custom-checkbox mb-5">
-                                    <input class="custom-control-input" id="customCheck2" name="b" value="b" type="checkbox">
-                                    <label class="custom-control-label" for="customCheck2"><input class="form-control" type="search" name="opt2" placeholder="Enter Option B &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" id="example-search-input" required></label>
+                                    <input class="custom-control-input" id="customCheck2" name="b[]" value="b" type="checkbox">
+                                    <label class="custom-control-label" for="customCheck2"><input class="form-control" type="search" name="opt2[]" placeholder="Enter Option B &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" id="example-search-input" required></label>
                                   </div>
                                 </div>
                                 <div class="col-lg-6 col-6">
                                   <div class="custom-control custom-checkbox mb-3">
-                                    <input class="custom-control-input" id="customCheck3" name="c" value="c" type="checkbox">
-                                    <label class="custom-control-label" for="customCheck3"><input class="form-control" type="search" name="opt3" placeholder="Enter Option C" id="example-search-input" required></label>
+                                    <input class="custom-control-input" id="customCheck3" name="c[]" value="c" type="checkbox">
+                                    <label class="custom-control-label" for="customCheck3"><input class="form-control" type="search" name="opt3[]" placeholder="Enter Option C" id="example-search-input" required></label>
                                   </div>
                                 </div>
                                 <div class="col-lg-6 col-6">
                                   <div class="custom-control custom-checkbox mb-3">
-                                    <input class="custom-control-input" id="customCheck4" name="d" value="d" type="checkbox">
-                                    <label class="custom-control-label" for="customCheck4"><input class="form-control" type="search" name="opt4" placeholder="Enter Option D &nbsp;" id="example-search-input" required></label>
+                                    <input class="custom-control-input" id="customCheck4" name="d[]" value="d" type="checkbox">
+                                    <label class="custom-control-label" for="customCheck4"><input class="form-control" type="search" name="opt4[]" placeholder="Enter Option D &nbsp;" id="example-search-input" required></label>
                                   </div>
                                 </div>
                             </div>
@@ -421,14 +419,27 @@ else{
                       <div class="row">
                         <div class="col-10 text-left">
 						<lable>Tags :</lable>
-                            <input type="text" class="form-control" name="tags" value="IQ" data-toggle="tags">
+                            <input type="text" class="form-control" name="tags[]" value="IQ" data-toggle="tags">
                         </div>
-                        <div class="col-2 text-right">
-                          <button type="submit" id="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Submit</button>
-                        </div>      
+                             
                       </div>                
-                  </div> 
+                  </div>
+
                 </div>
+				</div>
+                </div>	
+				<div class="card-footer">				
+					<div class="row">
+						<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12"></div>
+						<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                          <button id="add" type="button" class="btn btn-success mr-2">Add New Question</button>
+                        </div>    
+						<div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+							<button type="submit" id="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Submit</button>
+						</div>
+						<div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
+					</div>
+				</div>
 
                 <!-- IF THERE IS ERROR  -->
 
@@ -459,7 +470,6 @@ else{
                     </div>
                   </div>
 				  -->
-
             </form>
         </div>       
         </div>
@@ -469,7 +479,35 @@ else{
     </div>
 
 <?php require_once 'requires/end-scripts.php' ?>
-  
+
+<script>
+  $(document).ready(function () {
+    // Send Search Text to the server
+    $("#search-series").keyup(function () {
+      let searchText = $(this).val();
+      if (searchText != "") {
+        $.ajax({
+          url: "search-series.php",
+          method: "post",
+          data: {
+            query: searchText,
+          },
+          success: function (response) {
+            $("#show-list-series").html(response);
+          },
+        });
+      } else {
+        $("#show-list-series").html("");
+      }
+    });
+    // Set searched text in input field on click of search button
+    $(document).on("click", "#sr", function () {
+      $("#search-series").val($(this).text());
+      $("#show-list-series").html("");
+    });
+  });
+</script> 
+
 <script>
   $(document).ready(function () {
     // Send Search Text to the server
@@ -555,14 +593,20 @@ else{
 </script>
 
 <script>
-  $(document).ready(function(){
+    $(document).ready(function(){
+		var i = 1;
+		var x=1;
+		$('#add').click(function(){
+			i++;
+			$('#dynamic_field').append('<div id="hh'+i+'"><div class="card"> <div class="card-header" style="padding-bottom: 0rem;"><div class="row"><div class="col-9 text-right"><div class="form-group"><input class="form-control" type="text" name="qust[]" placeholder="Question" required></div></div><div class="col-3 text-right"><select class="form-control" name="difficulty-level[]" id="exampleFormControlSelect1"><option value="0">Difficulty Level</option><option value="1">Easy</option><option value="2">Medium</option><option value="3">Difficult</option><option value="4">Expert</option><option value="5">Professional</option>  </select></div>    </div> </div> <div class="card-body">   <div class="pl-lg-10"> <div class="pl-lg-4 mb-5"> <div class="row"><div class="col-lg-6 col-6">  <div class="custom-control custom-checkbox mb-5">    <input class="custom-control-input" id="customCheck1" name="a[]" value="a" type="checkbox">    <label class="custom-control-label" for="customCheck1"><input class="form-control" type="search" name="opt1[]" placeholder="Enter Option A" id="example-search-input" required></label>  </div></div><div class="col-lg-6 col-6">  <div class="custom-control custom-checkbox mb-5">    <input class="custom-control-input" id="customCheck2" name="b[]" value="b" type="checkbox">    <label class="custom-control-label" for="customCheck2"><input class="form-control" type="search" name="opt2[]" placeholder="Enter Option B &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" id="example-search-input" required></label>  </div></div><div class="col-lg-6 col-6">  <div class="custom-control custom-checkbox mb-3">    <input class="custom-control-input" id="customCheck3" name="c[]" value="c" type="checkbox"> <label class="custom-control-label" for="customCheck3"><input class="form-control" type="search" name="opt3[]" placeholder="Enter Option C" id="example-search-input" required></label>  </div></div><div class="col-lg-6 col-6">  <div class="custom-control custom-checkbox mb-3">    <input class="custom-control-input" id="customCheck4" name="d[]" value="d" type="checkbox">    <label class="custom-control-label" for="customCheck4"><input class="form-control" type="search" name="opt4[]" placeholder="Enter Option D &nbsp;" id="example-search-input" required></label></div>   </div>    </div></div></div</div> <div class="card-footer"><div class="row"><div class="col-10 text-lef<lable>Tags :</lable><input type="text" class="form-control" name="tags[]" value="IQ" data-toggle="tags"></div></div></div></div></div>');});
+	  
     $("#submit").on('click',function(){
-      var series = $("#series").val();
+      var series = $("#search-series").val();
       var type = $("#search-type").val();
       var domain = $("#search-domain").val();
       var topic = $("#search-topic").val();
       var form = $('#formvalue')[0];
-      var formdata = new FormData(form);
+      var formdata = new FormData(form).serialize();
       formdata.append("series",series);
       formdata.append("type",type);
       formdata.append("domain",domain);
@@ -576,12 +620,16 @@ else{
         cache :false,
         success:function(result){
           alert(result);
+		  $("#formvalue")[0].reset();
         }
       });
     });
-  });    
+  } );    
 </script>
-  
+
+
 </body>
 
 </html>
+
+    

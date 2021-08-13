@@ -1,6 +1,7 @@
 <?php
 require_once "identification.php";
 $user_name=$row['name'];
+$user_interest = $row['interest'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -244,7 +245,7 @@ $user_name=$row['name'];
                 <div class="dropdown-header noti-title">
                   <h6 class="text-overflow m-0">Welcome!</h6>
                 </div>
-                <a href="registration.php" class="dropdown-item">
+                <a href="#!" class="dropdown-item">
                   <i class="ni ni-single-02"></i>
                   <span>My profile</span>
                 </a>
@@ -271,10 +272,6 @@ $user_name=$row['name'];
         </div>
       </div>
     </nav>
-	<?php
-		$query_quiz="select quiz_id,quiz_title,quiz_date,quiz_deadline,quiz_time from quiz_topic";
-		$quiz_result = mysqli_query($conn, $query_quiz);
-	?>
     <!-- Header -->
     <div class="header pb-6 d-flex align-items-center" style="min-height: 150px; background-image: url(img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
         <!-- Mask -->
@@ -283,15 +280,15 @@ $user_name=$row['name'];
            <div class="header-body">
              <div class="row align-items-center py-4">
                <div class="col-lg-6 col-7">
-                 <h6 class="h2 text-white d-inline-block mb-0">Quizes</h6>
+                 <!--<h6 class="h2 text-white d-inline-block mb-0">Quizes</h6>-->
                  
                </div>
                <div class="col-lg-6 col-5 text-right">
                  <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                    <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                     <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                     <!--<li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>-->
                      <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
-                     <li class="breadcrumb-item active" aria-current="page">Quizes</li>
+                     <!--<li class="breadcrumb-item active" aria-current="page">Quizes</li>-->
                    </ol>
                  </nav>
                  <!-- <a href="#" class="btn btn-sm btn-neutral">New</a>
@@ -326,6 +323,9 @@ $user_name=$row['name'];
 					</thead>
 					<tbody class="list">
 					<?php
+					
+						$query_quiz="select quiz_id,quiz_title,quiz_date,quiz_deadline,quiz_time from quiz_topic where exam='$user_interest'";
+						$quiz_result = mysqli_query($conn, $query_quiz);
 						while($quiz_row = mysqli_fetch_assoc($quiz_result))
 						{
 							$quiz_id=$quiz_row['quiz_id'];

@@ -39,7 +39,7 @@
               $_SESSION["password"] = $row["password"];
               $_SESSION["role"] = $row["role"];
               if($row['role']=="student")
-                header("location: leaderboard.php");
+                header("location: registration.php");
               else if($row['role']=="admin")
                 header("location: admin/leaderboard.php");
             }

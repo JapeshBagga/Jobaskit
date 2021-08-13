@@ -13,15 +13,23 @@ if (isset($_POST['submit'])){
 			*/
 			#$first_name = $_POST['first_name'];
 			#$last_name = $_POST['last_name'];
+			$name = $_POST['name']; 
 			$email = $_POST['email'];
 			$password = $_POST['password'];
 			$role = $_POST['role'];
 			#$mobile_no = $_POST['mobile_no'];
 			#$user_dob = $_POST['user_dob'];
 			
-			$query = "insert into login (email,password,role) values('$email','$password','$role')";
-			mysqli_query($conn, $query);
-			header('location:index.php');
+			$sel_query= "select email from login where email = '$email'";
+			$sel_result = mysqli_query($conn, $sel_query);
+			$sel_rowcount = mysqli_num_rows($sel_result);
+			if($sel_rowcount <=0){
+				$query = "insert into login (name,email,password,role) values('$name','$email','$password','$role')";
+				mysqli_query($conn, $query);
+				header('location:index.php');
+			}else{
+				echo "<script>alert('User Akready Exists !');</script>";
+			}
 		}
 		else{
 			
@@ -135,7 +143,7 @@ if (isset($_POST['submit'])){
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                     </div>
-                    <input name="name" class="form-control" placeholder="Name" type="text">
+                    <input name="name" class="form-control" placeholder="Name" type="text" required>
                   </div>
                 </div>
                 <div class="form-group">
@@ -143,7 +151,7 @@ if (isset($_POST['submit'])){
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input name="email" class="form-control" placeholder="Email" type="email">
+                    <input name="email" class="form-control" placeholder="Email" type="email" required>
                   </div>
                 </div>
                 <div class="form-group">
@@ -151,7 +159,7 @@ if (isset($_POST['submit'])){
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input name="password" class="form-control" placeholder="Password" type="password">
+                    <input name="password" class="form-control" placeholder="Password" type="password" required>
                   </div>
                 </div>
                 <!-- <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div> -->

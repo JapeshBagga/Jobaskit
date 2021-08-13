@@ -1,4 +1,3 @@
-
 <?php
 require_once "identification.php";
 $subrole = $row['subrole'];
@@ -11,11 +10,11 @@ $subrole = $row['subrole'];
 		$opt4 = $_POST['opt4'];
 		$difficulty_level = $_POST['difficulty-level'];
 		$tags = $_POST['tags'];
-		$sr_id = $_POST['series'];
+		$sr_name = trim($_POST['series']);
 		$dm_name = trim($_POST['domain']);
 		$type_name = trim($_POST['type']);
 		$quiz_title = trim($_POST['topic']);
-		if(!empty($qust) && !empty($opt1)  && !empty($opt2) && !empty($opt3) && !empty($opt4) && !empty($difficulty_level) && !empty($tags) && !empty($sr_id) && !empty($dm_name) && !empty($type_name) && !empty($quiz_title)){
+		if(!empty($qust) && !empty($opt1)  && !empty($opt2) && !empty($opt3) && !empty($opt4) && !empty($difficulty_level) && !empty($tags) && !empty($sr_name) && !empty($dm_name) && !empty($type_name) && !empty($quiz_title)){
 		
 			$validation = 1;
 			if(!empty($_POST['a']) && !empty($_POST['b']) && !empty($_POST['c']) && !empty($_POST['d'])){
@@ -53,7 +52,22 @@ $subrole = $row['subrole'];
 			}
 			
 			if($validation != 0){
-			
+		
+				
+				$query = "select sr_id from series where sr_name='$sr_name'";
+				$query_result = mysqli_query($conn, $query);
+				$rowcount = mysqli_num_rows($query_result);
+				if($rowcount <= 0){
+					$query = "insert into series (sr_name) values ('$sr_name')";
+					mysqli_query($conn, $query);
+				}
+				
+				$query = "select sr_id from series where sr_name='$sr_name'";
+				$query_result = mysqli_query($conn, $query);
+				$row_sr = mysqli_fetch_assoc($query_result);
+				$sr_id = $row_sr['sr_id'];
+				
+				
 		
 				$query = "select type_id from type where type_name='$type_name'";
 				$query_result = mysqli_query($conn, $query);
@@ -100,7 +114,15 @@ $subrole = $row['subrole'];
 				
 				$qust_query = "insert into quiz_qust (question,opt1,opt2,opt3,opt4,correct1,correct2,quiz_id,series_id,type_id,domain_id,difficulty_level,tags) values
 				('$qust','$opt1','$opt2','$opt3','$opt4','$corr1','$corr2','$topic_id','$sr_id','$type_id','$dm_id','$difficulty_level','$tags')";
-				mysqli_query($conn, $qust_query);
+				if(mysqli_query($conn, $qust_query)){
+				
+					$query = "select no_of_qust from quiz_topic where quiz_title='$quiz_title'";
+					$query_result = mysqli_query($conn, $query);
+					$row = mysqli_fetch_assoc($query_result);
+					$no_of_qust = $row['no_of_qust']+1;
+					$update_no_of_qust = "update quiz_topic set no_of_qust='$no_of_qust' where quiz_title='$quiz_title'";
+					mysqli_query($conn, $update_no_of_qust);
+				}
 				$_SESSION['message_quiz'] = "Successfull";
 				echo "Successfull";
 			}
