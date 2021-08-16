@@ -8,6 +8,12 @@
   <title>Edit Profile | JoBaskit</title>
  
   <?php require_once 'requires/top-scripts.php' ?>
+  <style>
+    .mg-top {
+        margin-top: 2.0rem !important;
+    }
+      
+  </style>
 
 </head>
 <body>
@@ -348,86 +354,60 @@
                   <h3 class="mb-0">Edit profile </h3>
                 </div>
                 <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                  <!--<a href="#!" class="btn btn-sm btn-primary">Settings</a>-->
                 </div>
               </div>
             </div>
             <div class="card-body">
               <form>
-                <h6 class="heading-small text-muted mb-4">User information</h6>
+                <!--<h6 class="heading-small text-muted mb-4">User Profile</h6>-->
                 <div class="pl-lg-4">
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-username">Username</label>
-                        <input name="up_username" type="text" id="input-username" class="form-control" placeholder="Username" >
+                        <label class="form-control-label" for="input-username">Full Name</label>
+                        <input name="up_username" type="text" id="input-username" class="form-control" placeholder="Full Name" >
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">Email address</label>
                         <input name="up_email" type="email" id="input-email" class="form-control" placeholder="jesse@example.com">
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">First name</label>
-                        <input name="up_first_name" type="text" id="input-first-name" class="form-control" placeholder="First name" value="Lucky">
+                        <label class="form-control-label" for="input-email">Alternate Email address</label>
+                        <input name="Alternate_email" type="email" id="input-email" class="form-control" placeholder="jesse_alternate@example.com">
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input name="up_last_name" type="text" id="input-last-name" class="form-control" placeholder="Last name" value="Jesse">
+                          <label class="form-control-label" for="Phone-number">Phone number</label>
+                          <input class="form-control" placeholder="Phone-number" id="Phone-number" min=10 max=13 type="text">
+                          <div class="input-group-append">
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-8 mg-top">
+                      <div class="form-group">
+                        <input type="file" name="up_pic" class="custom-file-input" id="customFileLang" lang="en">
+                        <label class="custom-file-label" for="customFileLang">Profile Picture (JPEG or PNG Only)</label>
                       </div>
                     </div>
                   </div>
                 </div>
                 <hr class="my-4" />
+                <div class="row">
+                  <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12"></div>
+                  <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                    <button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Update</button>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
 
-                <!-- Address -->
-                <h6 class="heading-small text-muted mb-4">Contact information</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-address">Address</label>
-                        <input name="up_address" id="input-address" class="form-control" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-city">City</label>
-                        <input name="up_city" type="text" id="input-city" class="form-control" placeholder="City">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">State</label>
-                        <input name="up_state" type="text" id="input-country" class="form-control" placeholder="State">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">Postal code</label>
-                        <input name="up_postcode" type="number" id="input-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr class="my-4" />
-
-                <!-- Description -->
-                <h6 class="heading-small text-muted mb-4">About me</h6>
-                <div class="pl-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label">About Me</label>
-                    <textarea name="up_about" rows="4" class="form-control" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                  </div>
+                  <br><br>
                 </div>
               </form>
             </div>
