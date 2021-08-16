@@ -1,8 +1,10 @@
 <?php
   require_once 'connection.php';
+  require_once 'config.php';
+  $google_client->setRedirectUri('https://jobaskit.com/eprep/manish-test.php');
   session_start();
   if(isset($_POST["submit"])){
-    /*
+
     if(empty($_POST['g-recaptcha-response'])){
       echo "<script> alert('Verify reCaptcha Checkbox !'); </script>";
     }
@@ -12,7 +14,6 @@
           $responseData = json_decode($verifyResponse);
           if($responseData->success){
         
-        */
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $email = trim($email);
         $pwd = mysqli_real_escape_string($conn, $_POST['password']);
@@ -49,9 +50,98 @@
           }
         }
       }
-    else{
-      
     }
+  }
+
+	
+	
+	
+		if(isset($_GET["code"]))
+		{
+			// var_dump($_GET["code"]);
+			//It will Attempt to exchange a code for an valid authentication token.
+			$token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
+
+			//This condition will check there is any error occur during geting authentication token. If there is no any error occur then it will execute if block of code/
+			if(!isset($token['error']))
+			{
+				//Set the access token used for requests
+				$google_client->setAccessToken($token['access_token']);
+
+				//Store "access_token" value in $_SESSION variable for future use.
+				$_SESSION['access_token'] = $token['access_token'];
+
+				//Create Object of Google Service OAuth 2 class
+				$google_service = new Google_Service_Oauth2($google_client);
+
+				//Get user profile data from google
+				$data = $google_service->userinfo->get();
+
+				$name = "";
+				$email = "";
+
+				//Below you can find Get profile data and store into $_SESSION variable
+				if(!empty($data['given_name']))
+				{
+					$name = $data['given_name'];
+				}
+
+				// if(!empty($data['family_name']))
+				// {
+				// 	$_SESSION['user_last_name'] = $data['family_name'];
+				// }
+
+				if(!empty($data['email']))
+				{
+					$email = $data['email'];
+				}
+
+				// $_SESSION['verified']="YE";
+
+				// var_dump($_SESSION);
+				// $email = $_POST['email'];
+				// var_dump("bruh".$email);
+				$query = "SELECT * FROM makos_quiz.login WHERE email = '$email'";
+				// $query->bind_param("s", $_POST['email']);
+	// 			$query->execute();
+				$result = mysqli_query($conn, $query );
+				if(mysqli_num_rows($result) != 0)
+				{
+					echo error_without_field("The email you entered is already taken");
+					// header('Location: index.php');
+				}
+				else
+				{
+					$query = $conn->prepare("INSERT INTO login(name, email, role) VALUES(?, ?, ?);");
+					$query->bind_param("sss", $name, $email, "student");
+					if($query->execute())
+						{
+							$_SESSION['verified']="YE";
+							$_SESSION['name_test'] = $name;
+							$_SESSION['email_test'] = $email;
+							// echo success("Successfully Signed Up.");
+							header('Location: manish-test.php');
+						}
+						
+					else
+						echo error_without_field("Couldn\'t Sign Up. Please try again later");
+				}
+
+
+
+
+
+				// if(!empty($data['gender']))
+				// {
+				// 	$_SESSION['user_gender'] = $data['gender'];
+				// }
+
+				// if(!empty($data['picture']))
+				// {
+				// 	$_SESSION['user_image'] = $data['picture'];
+				// }
+			}
+		}	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,6 +162,7 @@
     <link rel="stylesheet" href="resources/css/style.css" />
     <!-- Custom Fonts -->
     <link rel="stylesheet" href="resources/icons/flaticon.css" />
+    <script src='https://www.google.com/recaptcha/api.js' async defer ></script>
   </head>
   <body>
     <!-- Header Navbar -->
@@ -132,11 +223,12 @@
                   <div class="form-group">
                     <input type="password" name="password" class="form-control" placeholder="Password" id="exampleInputPassword1" required>
                   </div>
+                  <div class="g-recaptcha" data-sitekey="6LeyUrwbAAAAAKCH2IUCkk2h1aCNUKjWFy9iGgxF"></div>
                   <button type="submit" name="submit" class="btn mt-2">Sign in</button>
                 </form>
-                <p class="or">Or</p>
-                <p class="lw">Login with</p>
-                <a href="#" title="Google" class="google"><img src="resources/images/google-plus.png" alt="Google"></a>
+                <p class="or">Or Login with</p>
+                <!--<p class="lw"></p>-->
+                <a href="<?php echo $google_client->createAuthUrl();?>" title="Google" class="google"><img src="resources/images/google-plus.png" alt="Google"></a>
                 <a href="#" title="Linkedin" class="linkedIn"><img src="resources/images/linkedin.png" alt="Linkedin"></a>
                 <!-- <div class="bannerFormGoogle">
                   <a href="" title="Facebook">

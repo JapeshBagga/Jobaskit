@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2021 at 03:56 PM
--- Server version: 10.1.13-MariaDB
--- PHP Version: 5.6.20
+-- Generation Time: Aug 16, 2021 at 10:33 AM
+-- Server version: 10.4.20-MariaDB
+-- PHP Version: 7.3.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -37,10 +38,12 @@ CREATE TABLE `domain` (
 --
 
 INSERT INTO `domain` (`dm_id`, `dm_name`, `dm_subrole`) VALUES
-(1, 'Mechanical', ''),
-(2, 'Computer Science', 'developer'),
-(3, 'HR', ''),
-(4, 'IT', 'developer');
+(1, 'NEET', 'mechanical'),
+(2, 'JEE', 'developer'),
+(3, 'BANK', 'mba'),
+(4, 'UPSC', 'developer'),
+(5, 'RAILWAY', 'be'),
+(6, 'ENGINEERING', 'be');
 
 -- --------------------------------------------------------
 
@@ -52,7 +55,7 @@ CREATE TABLE `introduction` (
   `intro_id` int(10) NOT NULL,
   `intro_data` mediumtext NOT NULL,
   `intro_comments` varchar(500) NOT NULL,
-  `intro_file` varchar(100) NOT NULL,
+  `intro_date` varchar(100) NOT NULL,
   `intro_login_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -60,8 +63,10 @@ CREATE TABLE `introduction` (
 -- Dumping data for table `introduction`
 --
 
-INSERT INTO `introduction` (`intro_id`, `intro_data`, `intro_comments`, `intro_file`, `intro_login_id`) VALUES
-(1, '55', '', 'files/61039eae3423e7.51657811.pdf', 1);
+INSERT INTO `introduction` (`intro_id`, `intro_data`, `intro_comments`, `intro_date`, `intro_login_id`) VALUES
+(2, 'Hi There, I am Sahil Patel.,', 'fine.', '', 1),
+(3, '', '', '', 0),
+(4, 'ggvv', '', '07 Aug 2021', 6);
 
 -- --------------------------------------------------------
 
@@ -76,6 +81,7 @@ CREATE TABLE `login` (
   `password` varchar(100) NOT NULL,
   `role` varchar(10) NOT NULL,
   `subrole` varchar(100) NOT NULL,
+  `interest` varchar(500) NOT NULL,
   `entry` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -83,10 +89,13 @@ CREATE TABLE `login` (
 -- Dumping data for table `login`
 --
 
-INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`, `subrole`, `entry`) VALUES
-(1, 'Sahil Patel', 'st@quiz.com', '123', 'student', '', 39),
-(2, 'Manish Patel', 'mkp@g.c', '123', 'admin', '', 1),
-(3, 'Arun Patel', 'dev@g.c', '123', 'admin', 'developer', 5);
+INSERT INTO `login` (`login_id`, `name`, `email`, `password`, `role`, `subrole`, `interest`, `entry`) VALUES
+(1, 'Sahil Patel', 'student@makos.com', 'student', 'student', '', 'JEE', 15),
+(2, 'Manish Patel', 'admin@makos.com', 'admin', 'admin', 'mechanical', '', 1),
+(3, 'Arun Patel', 'dev@g.c', '123', 'admin', 'developer', '', 5),
+(4, 'Sachin Roy', 'mba@g.c', '123', 'admin', 'mba', '', 0),
+(5, 'Pankaj Sahu', 'be@g.c', '123', 'admin', 'be', '', 0),
+(6, 'Keval Rajak', 'st2@g.c', '123', 'student', '', 'NEET', 2);
 
 -- --------------------------------------------------------
 
@@ -108,6 +117,8 @@ CREATE TABLE `quiz_qust` (
   `type_id` int(10) NOT NULL,
   `domain_id` int(10) NOT NULL,
   `difficulty_level` int(2) NOT NULL,
+  `flag_qust` varchar(10) NOT NULL,
+  `flag_wrong` varchar(10) NOT NULL,
   `tags` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -115,18 +126,27 @@ CREATE TABLE `quiz_qust` (
 -- Dumping data for table `quiz_qust`
 --
 
-INSERT INTO `quiz_qust` (`qust_id`, `question`, `opt1`, `opt2`, `opt3`, `opt4`, `correct1`, `correct2`, `quiz_id`, `series_id`, `type_id`, `domain_id`, `difficulty_level`, `tags`) VALUES
-(10, 'ww', 'ww', 'ww', 'w', 'sww', 'c', 'd', 1, 4, 5, 3, 2, 'IQ'),
-(11, 'rr', 'rr', 'rr', 'rr', 'rr', 'a', 'b', 1, 4, 1, 1, 5, 'IQ'),
-(12, 'tt', 'rr', 'tt', 'rr', 'rr', 'a', 'd', 1, 1, 1, 1, 2, 'IQ'),
-(13, 'tt', 'rr', 'tt', 'tt', 'rr', 'b', 'c', 1, 1, 1, 1, 1, 'IQ'),
-(14, 'ff', 'ww', 'gg', 'bh', 'bb', 'a', 'b', 1, 1, 1, 2, 1, 'IQ'),
-(15, 'tt', 'ee', 'ff', 'ff', 'bb', 'a', 'b', 3, 1, 1, 2, 2, 'IQ'),
-(16, 'ff', 'cc', 'jj', 'ff', 'ff', 'a', 'b', 1, 1, 4, 2, 2, 'IQ'),
-(17, 'tt', 'ff', ' hh', 'fff', ' bbb', 'b', 'c', 1, 1, 4, 2, 2, 'IQ'),
-(18, 'ttuuh', 'hhh', 'bbn', 'ggg', 'vv', 'b', 'd', 1, 1, 4, 2, 2, 'IQ'),
-(19, 'rtt', 'vvv', '   vggh', 'vvbn', 'jjkk', 'b', 'c', 1, 1, 4, 2, 3, 'IQ'),
-(20, 'rr', 'hh', 'nn', 'gg', 'uu', 'b', 'c', 1, 1, 1, 4, 3, 'IQ');
+INSERT INTO `quiz_qust` (`qust_id`, `question`, `opt1`, `opt2`, `opt3`, `opt4`, `correct1`, `correct2`, `quiz_id`, `series_id`, `type_id`, `domain_id`, `difficulty_level`, `flag_qust`, `flag_wrong`, `tags`) VALUES
+(10, 'ww', 'ww', 'ww', 'w', 'sww', 'c', 'd', 1, 4, 5, 3, 2, '', '', 'IQ'),
+(11, 'rr', 'rr', 'rr', 'rr', 'rr', 'a', 'b', 1, 4, 1, 1, 5, '', '', 'IQ'),
+(12, 'tt', 'rr', 'tt', 'rr', 'rr', 'a', 'd', 1, 1, 1, 1, 2, '', '', 'IQ'),
+(13, 'tt', 'rr', 'tt', 'tt', 'rr', 'b', 'c', 1, 1, 1, 1, 1, '', '', 'IQ'),
+(14, 'ff', 'ww', 'gg', 'bh', 'bb', 'a', 'b', 1, 1, 1, 2, 1, '', '', 'IQ'),
+(15, 'tt', 'ee', 'ff', 'ff', 'bb', 'a', 'b', 3, 1, 1, 2, 2, '1', '1', 'IQ'),
+(16, 'ff', 'cc', 'jj', 'ff', 'ff', 'a', 'b', 1, 1, 4, 2, 2, '', '', 'IQ'),
+(17, 'tt', 'ff', ' hh', 'fff', ' bbb', 'b', 'c', 1, 1, 4, 2, 2, '', '', 'IQ'),
+(18, 'ttuuh', 'hhh', 'bbn', 'ggg', 'vv', 'b', 'd', 1, 1, 4, 2, 2, '', '', 'IQ'),
+(19, 'rtt', 'vvv', '   vggh', 'vvbn', 'jjkk', 'b', 'c', 1, 1, 4, 2, 3, '', '', 'IQ'),
+(20, 'rr', 'hh', 'nn', 'gg', 'uu', 'b', 'c', 1, 1, 1, 4, 3, '', '', 'IQ'),
+(21, 'rr', 'ff', 'bb', 'vv', 'yy', 'a', 'd', 1, 1, 4, 2, 2, '', '', 'IQ'),
+(22, 'ttggjj', 'fgjj', 'tggh', 'nnm', 'hhhh', 'b', 'c', 1, 1, 4, 2, 2, '', '', 'IQ'),
+(23, 'trfh', 'rggkjvvn', 'cvbnjh', 'fghh', 'vvbb', 'a', 'd', 1, 1, 4, 2, 4, '', '', 'IQ'),
+(24, 'test', 'test', 'test', 'test', 'test', 'b', 'c', 2, 2, 1, 4, 3, '3', '2', 'IQ'),
+(25, 'ted', 'ted', 'ted', 'ted', 'ted', 'a', 'c', 2, 2, 1, 2, 1, '2', '3', 'IQ'),
+(26, 'ff', 'ff', 'hh', 'ff', 'kk', 'a', 'b', 2, 3, 4, 2, 2, '', '', 'IQ'),
+(27, 'tt', 'gg', '6t', 'xx', 'vv', 'b', 'd', 3, 5, 2, 2, 2, '', '', 'IQ'),
+(28, 'jj', 'gg', 'hh', 'gg', 'gg', 'b', 'd', 3, 6, 2, 2, 2, '', '', 'IQ'),
+(29, 'ff', 'cc', 'cc', 'ss', 'vv', 'a', 'b', 3, 7, 2, 2, 2, '', '', 'IQ');
 
 -- --------------------------------------------------------
 
@@ -140,17 +160,19 @@ CREATE TABLE `quiz_topic` (
   `no_of_qust` varchar(10) NOT NULL,
   `quiz_date` varchar(50) NOT NULL,
   `quiz_deadline` varchar(50) NOT NULL,
-  `quiz_time` varchar(10) NOT NULL
+  `quiz_time` varchar(10) NOT NULL,
+  `quiz_qust_limit` varchar(10) NOT NULL,
+  `exam` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `quiz_topic`
 --
 
-INSERT INTO `quiz_topic` (`quiz_id`, `quiz_title`, `no_of_qust`, `quiz_date`, `quiz_deadline`, `quiz_time`) VALUES
-(1, 'Frontend', '0', '30 Jul 2021', '05 Aug 2021', '1'),
-(2, 'Arithmetic Progression', '', '', '', ''),
-(3, 'Telnet Acqusition', '', '', '', '');
+INSERT INTO `quiz_topic` (`quiz_id`, `quiz_title`, `no_of_qust`, `quiz_date`, `quiz_deadline`, `quiz_time`, `quiz_qust_limit`, `exam`) VALUES
+(1, 'Frontend', '0', '30 Jul 2021', '05 Aug 2021', '1', '', 'UPSC'),
+(2, 'Arithmetic Progression', '3', '', '', '', '', 'JEE'),
+(3, 'Telnet Acqusition', '3', '', '', '', '', 'NEET');
 
 -- --------------------------------------------------------
 
@@ -164,20 +186,6 @@ CREATE TABLE `score` (
   `score_quiz_id` int(10) NOT NULL,
   `score_login_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `score`
---
-
-INSERT INTO `score` (`score_id`, `score_data`, `score_quiz_id`, `score_login_id`) VALUES
-(1, '10', 1, 1),
-(2, '0', 1, 1),
-(3, '7', 1, 1),
-(4, '6', 0, 2),
-(5, '8', 0, 2),
-(6, '1', 0, 0),
-(7, '0', 1, 1),
-(8, '1', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -195,10 +203,12 @@ CREATE TABLE `series` (
 --
 
 INSERT INTO `series` (`sr_id`, `sr_name`) VALUES
-(1, 'series1'),
-(2, 'series2'),
-(3, 'Theory'),
-(4, '1');
+(1, 'Aptitude'),
+(2, 'Technical'),
+(3, 'General Knowledge'),
+(4, 'Newspaper'),
+(6, 'CA'),
+(7, 'Science');
 
 -- --------------------------------------------------------
 
@@ -231,24 +241,70 @@ INSERT INTO `type` (`type_id`, `type_name`) VALUES
 CREATE TABLE `user_profile` (
   `up_id` int(10) NOT NULL,
   `up_login_id` int(10) NOT NULL,
-  `up_username` varchar(100) NOT NULL,
-  `up_first_name` varchar(100) NOT NULL,
-  `up_last_name` varchar(100) NOT NULL,
+  `up_fullname` varchar(500) NOT NULL,
+  `up_father` varchar(500) NOT NULL,
+  `up_mother` varchar(500) NOT NULL,
   `up_email` varchar(100) NOT NULL,
-  `up_leading_score` varchar(10) NOT NULL,
+  `up_age` varchar(10) NOT NULL,
+  `up_gender` varchar(10) NOT NULL,
+  `up_height` varchar(50) NOT NULL,
+  `up_hobbies` varchar(500) NOT NULL,
+  `up_dob` varchar(50) NOT NULL,
+  `up_phone` varchar(20) NOT NULL,
+  `up_married` varchar(50) NOT NULL,
+  `up_religion` varchar(100) NOT NULL,
+  `up_about` mediumtext NOT NULL,
+  `up_image` varchar(100) NOT NULL,
   `up_address` varchar(500) NOT NULL,
   `up_city` varchar(100) NOT NULL,
   `up_state` varchar(100) NOT NULL,
   `up_postcode` varchar(10) NOT NULL,
-  `up_about` varchar(500) NOT NULL
+  `up_nationality` varchar(200) NOT NULL,
+  `up_10_school` varchar(500) NOT NULL,
+  `up_10_city` varchar(100) NOT NULL,
+  `up_10_state` varchar(100) NOT NULL,
+  `up_10_cgpa` varchar(10) NOT NULL,
+  `up_10_board` varchar(100) NOT NULL,
+  `up_10_yop` varchar(20) NOT NULL,
+  `up_12_school` varchar(500) NOT NULL,
+  `up_12_city` varchar(100) NOT NULL,
+  `up_12_state` varchar(100) NOT NULL,
+  `up_12_cgpa` varchar(10) NOT NULL,
+  `up_12_board` varchar(100) NOT NULL,
+  `up_12_yop` varchar(20) NOT NULL,
+  `up_ug_college` varchar(500) NOT NULL,
+  `up_ug_city` varchar(100) NOT NULL,
+  `up_ug_state` varchar(100) NOT NULL,
+  `up_ug_cgpa` varchar(10) NOT NULL,
+  `up_ug_university` varchar(200) NOT NULL,
+  `up_ug_yop` varchar(50) NOT NULL,
+  `up_pg_college` varchar(100) NOT NULL,
+  `up_pg_city` varchar(100) NOT NULL,
+  `up_pg_state` varchar(100) NOT NULL,
+  `up_pg_cgpa` varchar(10) NOT NULL,
+  `up_pg_university` varchar(100) NOT NULL,
+  `up_pg_yop` varchar(50) NOT NULL,
+  `up_work_designation` varchar(500) NOT NULL,
+  `up_work_company` varchar(500) NOT NULL,
+  `up_work_address` varchar(500) NOT NULL,
+  `up_work_start` varchar(50) NOT NULL,
+  `up_work_end` varchar(50) NOT NULL,
+  `up_work_desc` varchar(1000) NOT NULL,
+  `up_work_resume` varchar(100) NOT NULL,
+  `up_career` mediumtext NOT NULL,
+  `up_por` varchar(500) NOT NULL,
+  `up_interest` varchar(500) NOT NULL,
+  `up_leading_score` varchar(10) NOT NULL,
+  `up_date` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user_profile`
 --
 
-INSERT INTO `user_profile` (`up_id`, `up_login_id`, `up_username`, `up_first_name`, `up_last_name`, `up_email`, `up_leading_score`, `up_address`, `up_city`, `up_state`, `up_postcode`, `up_about`) VALUES
-(1, 0, 'mkp', 'm', 'p', 'mkp@d.c', '', 'Dau para', 'Bemetara', 'Chhattisgarh', '491338', 'rtt');
+INSERT INTO `user_profile` (`up_id`, `up_login_id`, `up_fullname`, `up_father`, `up_mother`, `up_email`, `up_age`, `up_gender`, `up_height`, `up_hobbies`, `up_dob`, `up_phone`, `up_married`, `up_religion`, `up_about`, `up_image`, `up_address`, `up_city`, `up_state`, `up_postcode`, `up_nationality`, `up_10_school`, `up_10_city`, `up_10_state`, `up_10_cgpa`, `up_10_board`, `up_10_yop`, `up_12_school`, `up_12_city`, `up_12_state`, `up_12_cgpa`, `up_12_board`, `up_12_yop`, `up_ug_college`, `up_ug_city`, `up_ug_state`, `up_ug_cgpa`, `up_ug_university`, `up_ug_yop`, `up_pg_college`, `up_pg_city`, `up_pg_state`, `up_pg_cgpa`, `up_pg_university`, `up_pg_yop`, `up_work_designation`, `up_work_company`, `up_work_address`, `up_work_start`, `up_work_end`, `up_work_desc`, `up_work_resume`, `up_career`, `up_por`, `up_interest`, `up_leading_score`, `up_date`) VALUES
+(1, 0, 'm', 'p', '', '', '', '', '', '', '', 'mkp@d.c', '', '', '', '', 'Dau para', 'Bemetara', 'Chhattisgarh', '491338', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
+(2, 1, 'Sahil Patel', 'Ram', 'ttt', 'st@quiz.com', '18', 'male', '6', 'enter', '2018-11-23', '675755348', 'married', 'indian', 'how', 'files/610e7385227a62.95170398.jpg', 'Dau para', 'ggg', 'ggh', '366667', 'iii', 'fhhj', 'yhh', 'fff', '80', 'gg', '2021-01', 'tt', 'ccv', 'dgh', '80', 'ccg', '2021-01', 'ggn', 'vvb', 'hhj', '80', 'fgg', '2021-01', 'ffh', ' ggg', 'rtgg', '80', 'ghh', '2021-01', 'cvv', 'ccg', 'fhh', '2014-06-23', '2020-06-23', 'fbb', 'files/610e7385227a62.64226630.jpg', 'gb', 'jjj', 'ggh', '80', '17:20 PM 07 Aug 2021');
 
 --
 -- Indexes for dumped tables
@@ -316,47 +372,57 @@ ALTER TABLE `user_profile`
 -- AUTO_INCREMENT for table `domain`
 --
 ALTER TABLE `domain`
-  MODIFY `dm_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `dm_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT for table `introduction`
 --
 ALTER TABLE `introduction`
-  MODIFY `intro_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `intro_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
-  MODIFY `login_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `login_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT for table `quiz_qust`
 --
 ALTER TABLE `quiz_qust`
-  MODIFY `qust_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `qust_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
 --
 -- AUTO_INCREMENT for table `quiz_topic`
 --
 ALTER TABLE `quiz_topic`
   MODIFY `quiz_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `score`
 --
 ALTER TABLE `score`
-  MODIFY `score_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `score_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `series`
 --
 ALTER TABLE `series`
-  MODIFY `sr_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `sr_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `type`
 --
 ALTER TABLE `type`
   MODIFY `type_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `up_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `up_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
