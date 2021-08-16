@@ -1,7 +1,7 @@
 <?php
 
     //Include Google Client Library for PHP autoload file
-    require_once '../seo/vendor/autoload.php';
+    require_once 'autoload.php';
     
     //Make object of Google API Client for call Google API
     $google_client = new Google_Client();
