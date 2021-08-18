@@ -1,148 +1,35 @@
 <?php
   require_once 'connection.php';
-//   $google_client->setRedirectUri('https://jobaskit.com/eprep/leaderboard.php');
   session_start();
   if(isset($_POST["submit"])){
-
-    if(empty($_POST['g-recaptcha-response'])){
-      echo "<script> alert('Verify reCaptcha Checkbox !'); </script>";
-    }
-    if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])){
-      $secret = '6LeyUrwbAAAAAHihf9AzThOxdnD1_e3Mj44yv1EP';
-          $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
-          $responseData = json_decode($verifyResponse);
-          if($responseData->success){
-        
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $name = mysqli_real_escape_string($conn, $_POST['name']);
+        $name = trim($name);
+        $email =mysqli_real_escape_string($conn, $_POST['email']);
         $email = trim($email);
         $pwd = mysqli_real_escape_string($conn, $_POST['password']);
+        $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+        $phone = trim($phone);
         #$pwd = md5($pwd);
         #$pwd = sha1($pwd);
         if(empty($email) || empty($pwd)){
-          
           echo "<script> alert('Email And Password Is Empty !!'); </script>";
         }
         else{
           $sql="SELECT email, password, role FROM login WHERE email='$email'";
           $result = mysqli_query($conn, $sql);
           $resultCheck = mysqli_num_rows($result);
-          if($resultCheck < 1){
-            echo "<script> alert('User Not Exist !!'); </script>";
+          if($resultCheck >= 1){
+            echo "<script> alert('User Already Exist !!'); </script>";
           }
-          else{
-            $row = mysqli_fetch_assoc($result);
-            if($pwd != $row["password"]){
-                echo "<script> alert('Wrong email or Password !!'); </script>";
+          else{	
+            $query = "insert into login (name,email,password,role,phone) values ('$name','$email','$pwd','student','$phone')";
+			mysqli_query($conn, $query);
+			$_SESSION['name'] = $name;
+			$_SESSION['email'] = $email;
+			header('Location: leaderboard.php');
             }
-            else if($pwd == $row["password"]){
-              $_SESSION["email"] = $row["email"];
-              $_SESSION["password"] = $row["password"];
-              $_SESSION["role"] = $row["role"];
-              if($row['role']=="student")
-                header("location: leaderboard.php");
-              else if($row['role']=="admin")
-                header("location: admin/leaderboard.php");
-            }
-            else{
-              echo "<script> alert('Wrong email or Password !!'); </script>";
-            }
-          }
         }
-      }
     }
-  }
-	if(isset($_GET["code"]))
-		{
-			// var_dump($_GET["code"]);
-			//It will Attempt to exchange a code for an valid authentication token.
-			$token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
-
-			//This condition will check there is any error occur during geting authentication token. If there is no any error occur then it will execute if block of code/
-			if(!isset($token['error']))
-			{
-				//Set the access token used for requests
-				$google_client->setAccessToken($token['access_token']);
-
-				//Store "access_token" value in $_SESSION variable for future use.
-				$_SESSION['access_token'] = $token['access_token'];
-
-				//Create Object of Google Service OAuth 2 class
-				$google_service = new Google_Service_Oauth2($google_client);
-
-				//Get user profile data from google
-				$data = $google_service->userinfo->get();
-
-				$name = "";
-				$email = "";
-
-				//Below you can find Get profile data and store into $_SESSION variable
-				if(!empty($data['given_name']))
-				{
-					$name = $data['given_name'];
-				}
-
-				// if(!empty($data['family_name']))
-				// {
-				// 	$_SESSION['user_last_name'] = $data['family_name'];
-				// }
-
-				if(!empty($data['email']))
-				{
-					$email = $data['email'];
-				}
-
-				// $_SESSION['verified']="YE";
-
-				// var_dump($_SESSION);
-				// $email = $_POST['email'];
-				// var_dump("bruh".$email);
-				// $query = "SELECT * FROM demodashboard.Users WHERE email = '$email'";
-				$query = "SELECT email FROM login WHERE email = '$email'";
-				// $query->bind_param("s", $_POST['email']);
-	// 			$query->execute();
-				$result = mysqli_query($conn, $query );
-				//var_dump(mysqli_num_rows($result));
-				//die("t");
-				if(mysqli_num_rows($result) <= 0){
-				    /*
-					$query = "insert into login (name,email,role) values ('$name','$email','student')";
-					mysqli_query($conn, $query);
-					$_SESSION['verified']="YE";
-					$_SESSION['name'] = $name;
-					$_SESSION['email'] = $email;
-					header('Location: leaderboard.php');
-					*/
-				}
-				else
-				{	
-					// $query = $conn->prepare("INSERT INTO Users(uname, email, password) VALUES(?, ?, ?);");
-					// $passwrd = "Google Login";
-					// $query->bind_param("sss", $uname, $email, $passwrd);
-					// if($query->execute())
-						// {
-					// $row = mysqli_fetch_array($result);
-					$_SESSION['verified']="YE";
-					$_SESSION['name'] = $name;
-					$_SESSION['email'] = $email;
-					// echo success("Successfully Signed Up.");
-					header('Location: leaderboard.php');
-						// }
-					// else
-					// 	echo error_without_field("Couldn\'t Sign Up. Please try again later");
-				
-				}
-
-				// if(!empty($data['gender']))
-				// {
-				// 	$_SESSION['user_gender'] = $data['gender'];
-				// }
-
-				// if(!empty($data['picture']))
-				// {
-				// 	$_SESSION['user_image'] = $data['picture'];
-				// }
-			}
-		}
 	
 ?>
 <!DOCTYPE html>
@@ -248,7 +135,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fas fa-phone"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Phone number" type="text">
+                    <input name="phone"class="form-control" placeholder="Phone number" type="text">
                   </div>
                 </div>
                 <!-- <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div> -->

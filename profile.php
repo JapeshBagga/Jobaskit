@@ -1,3 +1,37 @@
+<?php
+    require_once "identification.php";
+    $user_name=$row['name'];
+    if(isset($_POST['submit'])){
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $alternate_email = $_POST['alternate_email'];
+        $phone = $_POST['phone'];
+        if($email != $alternate_email){
+            if(empty($_FILES['image']['tmp_name'])){
+        		$up_query = "update login set name='$name',email='$email',alternate_email='$alternate_email',phone='$phone' where login_id=$login_id";
+        		if(mysqli_query($conn, $up_query)){
+        		    echo "<script>alert('Successsful');</script>";
+        		    
+        		}
+            }
+        	else{
+        		$target_directory = "files/";
+        		$target_file = $target_directory.basename($_FILES["image"]["name"]);
+        		$filetype = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        		$image = $target_directory.uniqid('', true).".".$filetype;
+        		
+        		move_uploaded_file($_FILES["image"]["tmp_name"],$image);
+        	    $up_query = "update login set name='$name',email='$email',alternate_email='$alternate_email',phone='$phone',image='$image' where login_id=$login_id";
+        		if(mysqli_query($conn, $up_query)){
+        		    echo "<script>alert('Successsful');</script>";
+        		    
+        		}
+        	}
+        }else{
+            echo "<script>alert('Primary And Alternate Email Should Not Be Same');</script>";
+        }
+	}
+   ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +42,12 @@
   <title>Edit Profile | JoBaskit</title>
  
   <?php require_once 'requires/top-scripts.php' ?>
+  <style>
+    .mg-top {
+        margin-top: 2.0rem !important;
+    }
+      
+  </style>
 
 </head>
 <body>
@@ -231,7 +271,7 @@
               <div class="media align-items-center">
                     <i class="ni ni-single-02"></i>
                   <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">User@Japesh</span>
+                    <span class="mb-0 text-sm  font-weight-bold"><?php echo $user_name;?></span>
                   </div>
               </div>
               </a>
@@ -256,7 +296,7 @@
                   <span>Support</span>
                 </a>
                 <div class="dropdown-divider"></div>
-                <a href="#!" class="dropdown-item">
+                <a href="logout.php" class="dropdown-item">
                   <i class="ni ni-user-run"></i>
                   <span>Logout</span>
                 </a>
@@ -286,60 +326,6 @@
     <!-- Page content -->
     <div class="container-fluid mt--6">
       <div class="row">
-        <!-- <div class="col-xl-4 order-xl-2">
-          <div class="card card-profile">
-            <img src="img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top">
-            <div class="row justify-content-center">
-              <div class="col-lg-3 order-lg-2">
-                <div class="card-profile-image">
-                  <a href="#">
-                    <img src="img/theme/team-4.jpg" class="rounded-circle">
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-              <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-info  mr-4 ">Connect</a>
-                <a href="#" class="btn btn-sm btn-default float-right">Message</a>
-              </div>
-            </div>
-            <div class="card-body pt-0">
-              <div class="row">
-                <div class="col">
-                  <div class="card-profile-stats d-flex justify-content-center">
-                    <div>
-                      <span class="heading">22</span>
-                      <span class="description">Friends</span>
-                    </div>
-                    <div>
-                      <span class="heading">10</span>
-                      <span class="description">Photos</span>
-                    </div>
-                    <div>
-                      <span class="heading">89</span>
-                      <span class="description">Comments</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="text-center">
-                <h5 class="h3">
-                  Jessica Jones<span class="font-weight-light">, 27</span>
-                </h5>
-                <div class="h5 font-weight-300">
-                  <i class="ni location_pin mr-2"></i>Bucharest, Romania
-                </div>
-                <div class="h5 mt-4">
-                  <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-                </div>
-                <div>
-                  <i class="ni education_hat mr-2"></i>University of Computer Science
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
         <div class="col-xl-12 order-xl-2">
           <div class="card">
             <div class="card-header">
@@ -348,88 +334,58 @@
                   <h3 class="mb-0">Edit profile </h3>
                 </div>
                 <div class="col-4 text-right">
-                  <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+                  <!--<a href="#!" class="btn btn-sm btn-primary">Settings</a>-->
                 </div>
               </div>
             </div>
             <div class="card-body">
-              <form>
-                <h6 class="heading-small text-muted mb-4">User information</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-username">Username</label>
-                        <input name="up_username" type="text" id="input-username" class="form-control" placeholder="Username" >
+               <form action="" method="post" enctype="multipart/form-data">
+                    <div class="pl-lg-4">
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-username">Full Name</label>
+                            <input name="name" type="text" id="input-username" class="form-control" placeholder="Full Name" value="<?php echo $row['name'];?>">
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-email">Email address</label>
+                            <input name="email" type="email" id="input-email" class="form-control" placeholder="jesse@example.com" value="<?php echo $row['email'];?>">
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label class="form-control-label" for="input-email">Alternate Email address</label>
+                            <input name="alternate_email" type="email" id="input-email" class="form-control" placeholder="jesse_alternate@example.com" value="<?php echo $row['alternate_email'];?>">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                              <label class="form-control-label" for="Phone-number">Phone number</label>
+                              <input name="phone"class="form-control" placeholder="Phone-number"id="Phone-number"min=10 max=13 type="text" value="<?php echo $row['phone'];?>">
+                          </div>
+                        </div>
+                        <div class="col-lg-8 mg-top">
+                          <div class="form-group">
+                            <input name="image" type="file"  class="custom-file-input" id="customFileLang" lang="en">
+                            <label class="custom-file-label" for="customFileLang">Profile Picture (JPEG or PNG Only)</label>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-email">Email address</label>
-                        <input name="up_email" type="email" id="input-email" class="form-control" placeholder="jesse@example.com">
+                    <hr class="my-4" />
+                    <div class="row">
+                      <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12"></div>
+                      <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                        <button type="submit" name="submit" class="btn btn-custon-rounded-three btn-warning">Update</button>
                       </div>
+                      <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
+                      <br><br>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-first-name">First name</label>
-                        <input name="up_first_name" type="text" id="input-first-name" class="form-control" placeholder="First name" value="Lucky">
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input name="up_last_name" type="text" id="input-last-name" class="form-control" placeholder="Last name" value="Jesse">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr class="my-4" />
-
-                <!-- Address -->
-                <h6 class="heading-small text-muted mb-4">Contact information</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-address">Address</label>
-                        <input name="up_address" id="input-address" class="form-control" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-city">City</label>
-                        <input name="up_city" type="text" id="input-city" class="form-control" placeholder="City">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">State</label>
-                        <input name="up_state" type="text" id="input-country" class="form-control" placeholder="State">
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="input-country">Postal code</label>
-                        <input name="up_postcode" type="number" id="input-postal-code" class="form-control" placeholder="Postal code">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr class="my-4" />
-
-                <!-- Description -->
-                <h6 class="heading-small text-muted mb-4">About me</h6>
-                <div class="pl-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label">About Me</label>
-                    <textarea name="up_about" rows="4" class="form-control" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                  </div>
-                </div>
-              </form>
+                </form>
             </div>
           </div>
         </div>
