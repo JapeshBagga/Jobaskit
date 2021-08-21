@@ -1,3 +1,21 @@
+<?php
+	require_once 'identification.php';
+	if(isset($_POST['submit'])){
+		$career_path = $_POST['career_path'];
+		$interest = $_POST['interest'];
+		$quick_check = $_POST['quick_check'];
+		
+		$log_insert = "update login set interest='$interest' where login_id=$login_id";
+		if(mysqli_query($conn, $log_insert)){
+			echo "<script>alert('Successful');</script>";
+		}
+		else{
+			echo "<script>alert('Try Again');</script>";
+		}
+	}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,9 +23,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
   <meta name="author" content="Creative Tim">
-  <title>Registeration -2 | JoBaskit</title>
+  <title>Student Survey | JoBaskit</title>
 
-  <?php require_once 'requires/top-scripts.php' ?>
+  <?php 
+  require_once 'requires/top-scripts.php'; 
+  ?>
   <style>
     .dz-message {
       padding:2rem 1rem;
@@ -310,9 +330,9 @@
                   <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option00" type="checkbox" checked>
-                                <label class="custom-control-label" for="option00">Yes</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option0" name="career_path" type="radio" value="yes">
+                                <label class="custom-control-label" for="option0">Yes</label>
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
@@ -321,17 +341,17 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option01" type="checkbox">
-                                <label class="custom-control-label" for="option01">No</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option1" name="career_path" type="radio" value="no">
+                                <label class="custom-control-label" for="option1">No</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option02" type="checkbox">
-                                <label class="custom-control-label" for="option02">Not sure</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option2" name="career_path" type="radio" value="not_sure">
+                                <label class="custom-control-label" for="option2">Not sure</label>
                             </div>
                         </div>
                     </div>
@@ -342,35 +362,39 @@
                 <h6 class="heading-small mb-4">2. Which competitive exam/field do you want to target?</h6>
                 <div class="pl-lg-4">
                   <div class="row">
+				  <?php
+					$sel_dm = "select dm_name from domain";
+					$result_dm = mysqli_query($conn, $sel_dm);
+					
+					$sel_log = "select interest from login where login_id=$login_id";
+					$result_log = mysqli_query($conn, $sel_log);
+					$row_log = mysqli_fetch_assoc($result_log);
+					
+					$i=21;
+					while($row_dm = mysqli_fetch_assoc($result_dm)){
+						
+				  ?>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option10" type="checkbox" checked>
-                                <label class="custom-control-label" for="option10">JEE/Engineering Entrance</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option<?php echo $i;?>" name="interest" type="radio" value="<?php echo $row_dm['dm_name'];?>"
+								<?php
+								if($row_log['interest']==$row_dm['dm_name'])
+									echo "checked";
+								?>
+								>
+                                <label class="custom-control-label" for="option<?php echo $i;?>"><?php echo $row_dm['dm_name'];?></label>
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option11" type="checkbox">
-                                <label class="custom-control-label" for="option11">NEET/Medical Entrance</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="option12" type="checkbox">
-                                <label class="custom-control-label" for="option12">Others</label>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
+				<?php
+						$i++;
+					}
+				?>
+				</div>
                 <hr class="my-4" />
 
                 <h6 class="heading-small mb-4">3. Would you like to quickly check your skills through a quick quiz?</h6>
@@ -378,9 +402,9 @@
                   <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="customCheck20" type="checkbox" checked>
-                                <label class="custom-control-label" for="customCheck20">Yes</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option222" name="quick_check" type="radio" value="yes">
+                                <label class="custom-control-label" for="option222">Yes</label>
                             </div>
                             <div class="valid-feedback">
                                 Looks good!
@@ -389,9 +413,9 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input class="custom-control-input" id="customCheck21" type="checkbox">
-                                <label class="custom-control-label" for="customCheck21">No</label>
+                            <div class="custom-control custom-radio mb-3">
+                                <input class="custom-control-input" id="option225" name="quick_check" type="radio" value="no">
+                                <label class="custom-control-label" for="option225">No</label>
                             </div>
                         </div>
                     </div>

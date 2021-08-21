@@ -1,8 +1,10 @@
 <?php
   require_once 'connection.php';
+  require_once 'config.php';
+  $google_client->setRedirectUri('https://jobaskit.com/eprep/manish-test.php');
   session_start();
   if(isset($_POST["submit"])){
-    /*
+
     if(empty($_POST['g-recaptcha-response'])){
       echo "<script> alert('Verify reCaptcha Checkbox !'); </script>";
     }
@@ -12,14 +14,12 @@
           $responseData = json_decode($verifyResponse);
           if($responseData->success){
         
-        */
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $email = trim($email);
         $pwd = mysqli_real_escape_string($conn, $_POST['password']);
         #$pwd = md5($pwd);
         #$pwd = sha1($pwd);
         if(empty($email) || empty($pwd)){
-          
           echo "<script> alert('Email And Password Is Empty !!'); </script>";
         }
         else{
@@ -39,7 +39,7 @@
               $_SESSION["password"] = $row["password"];
               $_SESSION["role"] = $row["role"];
               if($row['role']=="student")
-                header("location: registration.php");
+                header("location: leaderboard.php");
               else if($row['role']=="admin")
                 header("location: admin/leaderboard.php");
             }
@@ -49,210 +49,278 @@
           }
         }
       }
-    else{
-      
     }
+  }
+
+	
+	
+	
+		if(isset($_GET["code"]))
+		{
+			// var_dump($_GET["code"]);
+			//It will Attempt to exchange a code for an valid authentication token.
+			$token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
+
+			//This condition will check there is any error occur during geting authentication token. If there is no any error occur then it will execute if block of code/
+			if(!isset($token['error']))
+			{
+				//Set the access token used for requests
+				$google_client->setAccessToken($token['access_token']);
+
+				//Store "access_token" value in $_SESSION variable for future use.
+				$_SESSION['access_token'] = $token['access_token'];
+
+				//Create Object of Google Service OAuth 2 class
+				$google_service = new Google_Service_Oauth2($google_client);
+
+				//Get user profile data from google
+				$data = $google_service->userinfo->get();
+
+				$name = "";
+				$email = "";
+
+				//Below you can find Get profile data and store into $_SESSION variable
+				if(!empty($data['given_name']))
+				{
+					$name = $data['given_name'];
+				}
+
+				// if(!empty($data['family_name']))
+				// {
+				// 	$_SESSION['user_last_name'] = $data['family_name'];
+				// }
+
+				if(!empty($data['email']))
+				{
+					$email = $data['email'];
+				}
+
+				// $_SESSION['verified']="YE";
+
+				// var_dump($_SESSION);
+				// $email = $_POST['email'];
+				// var_dump("bruh".$email);
+				$query = "SELECT * FROM makos_quiz.login WHERE email = '$email'";
+				// $query->bind_param("s", $_POST['email']);
+	// 			$query->execute();
+				$result = mysqli_query($conn, $query );
+				if(mysqli_num_rows($result) != 0)
+				{
+					echo error_without_field("The email you entered is already taken");
+					// header('Location: index.php');
+				}
+				else
+				{
+					$query = $conn->prepare("INSERT INTO login(name, email, role) VALUES(?, ?, ?);");
+					$query->bind_param("sss", $name, $email, "student");
+					if($query->execute())
+						{
+							$_SESSION['verified']="YE";
+							$_SESSION['name_test'] = $name;
+							$_SESSION['email_test'] = $email;
+							// echo success("Successfully Signed Up.");
+							header('Location: manish-test.php');
+						}
+						
+					else
+						echo error_without_field("Couldn\'t Sign Up. Please try again later");
+				}
+
+
+
+
+
+				// if(!empty($data['gender']))
+				// {
+				// 	$_SESSION['user_gender'] = $data['gender'];
+				// }
+
+				// if(!empty($data['picture']))
+				// {
+				// 	$_SESSION['user_image'] = $data['picture'];
+				// }
+			}
+		}	
 ?>
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
-  <meta name="author" content="Creative Tim">
-  <title>Login | JoBaskit</title>
-  
-  <?php require_once 'requires/top-scripts.php' ?>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>Login | JoBaskit</title>
+    
+    
 
-  <style>
-    body, .header{
-      background: linear-gradient(87deg, #ec9f05 0, #ff4e00 100%) !important;
-    }
-  </style>
-  
-</head>
-<body class="bg-default">
-  
- <!-- Navbar -->
- <nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light">
-  <div class="container">
-    <a class="navbar-brand" href="dashboard.html">
-      <img src="img/brand/logo.png">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
-      <div class="navbar-collapse-header">
-        <div class="row">
-          <div class="col-6 collapse-brand">
-            <a href="dashboard.html">
-              <img src="img/brand/blue.png">
-            </a>
-          </div>
-          <div class="col-6 collapse-close">
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
-              <span></span>
-              <span></span>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="resources/bootstrap/bootstrap.min.css" />
+    <!-- Custom css -->
+    <link rel="stylesheet" href="resources/css/general.css" />
+    <link rel="stylesheet" href="resources/css/header-footer.css" />
+    <link rel="stylesheet" href="resources/css/style.css" />
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="resources/icons/flaticon.css" />
+    <script src='https://www.google.com/recaptcha/api.js' async defer ></script>
+  </head>
+  <body>
+    <!-- Header Navbar -->
+    <header>
+      <nav class="navbar navbar-default nav-fixed">
+        <div class="container">
+          <div class="navbar-header">
+            <button
+              type="button"
+              class="navbar-toggle collapsed"
+              data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
             </button>
+            <!-- <a class="navbar-brand" href="index.html"
+              >Jobaskit</a> -->
+            <a class="navbar-brand" href="index.html"
+              ><img src="resources/images/logo.png" title="Jobaskit"
+            /></a>
+          </div>
+          <div
+            class="collapse navbar-collapse"
+            id="bs-example-navbar-collapse-1"
+          >
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="https://jobaskit.com/feature_1.php" title="Colleges">Colleges</a></li>
+              <li><a href="https://jobaskit.com/feature.php" title="Requiters">Recruiters</a></li>
+              <li><a href="users.html" title="Users">Users</a></li>
+              <li><a href="features.html" class="pr-0" title="Features">Features</a></li>
+            </ul>
           </div>
         </div>
-      </div>
-      <!-- <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="dashboard.html" class="nav-link">
-            <span class="nav-link-inner--text">Dashboard</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="login.html" class="nav-link">
-            <span class="nav-link-inner--text">Login</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="register.html" class="nav-link">
-            <span class="nav-link-inner--text">Register</span>
-          </a>
-        </li>
-      </ul> -->
-      
-      <!--Right Sign up button-->
-      <hr class="d-lg-none" />
-      <ul class="navbar-nav align-items-lg-center ml-lg-auto">
-        <li class="nav-item d-none d-lg-block ml-lg-4">
-          <!-- <a href="sign-up.php" class="btn btn-neutral btn-icon">
-            <span class="btn-inner--icon">
-              <i class="fas fa-shopping-cart mr-2"></i>
-            </span>
-            <span class="nav-link-inner--text">SIGN-UP</span>
-          </a> -->
+      </nav>
+    </header>
 
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  <!-- Main content -->
-  <div class="main-content">
-    <!-- Header -->
-    <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
-      <!-- <div class="container">
-        <div class="header-body text-center mb-7">
-          <div class="row justify-content-center">
-            <div class="col-xl-5 col-lg-6 col-md-8 px-5">
-              <h1 class="text-white">Welcome!</h1>
-              <p class="text-lead text-white">Use these awesome forms to login or create new account in your project for free.</p> 
+    <!-- Banner -->
+    <div class="banner">
+      <div class="bannerOverlay">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-7">
+              <div class="bannerDesc">
+                <img src="/resources/images/bannerImg.png" title="Jobaskti">
+              </div>
+            </div>
+            <div class="col-sm-5">
+              <div class="bannerForm">
+                <h2>Login</h2>
+                <form action="" method="post" role="form">
+                  <div class="form-group">
+                      <input name="email" class="form-control" placeholder="Email" type="email" id="email" required>
+                  </div>
+                  <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" id="exampleInputPassword1" required>
+                  </div>
+                  <div class="g-recaptcha" data-sitekey="6LeyUrwbAAAAAKCH2IUCkk2h1aCNUKjWFy9iGgxF"></div>
+                  <button type="submit" name="submit" class="btn mt-2">Sign in</button>
+                </form>
+                <p class="or">Or Login with</p>
+                <!--<p class="lw"></p>-->
+                <a href="<?php echo $google_client->createAuthUrl();?>" title="Google" class="google"><img src="resources/images/google-plus.png" alt="Google"></a>
+                <a href="#" title="Linkedin" class="linkedIn"><img src="resources/images/linkedin.png" alt="Linkedin"></a>
+                <!-- <div class="bannerFormGoogle">
+                  <a href="" title="Facebook">
+                    <div class="bannerFormGoogleImg">
+                      <img src="resources/images/google-plus.png" title="Google Login">
+                    </div>
+                    <div class="bannerFormGoogleTxt">
+                      <p class="mb-0">Google</p>
+                    </div>
+                  </a>
+                </div>
+                <div class="bannerFormFacebook">
+                  <a href="" title="Facebook">
+                    <div class="bannerFormFacebookImg">
+                      <img src="resources/images/facebook.png" title="Facebook Login">
+                    </div>
+                    <div class="bannerFormFacebookTxt">
+                      <p class="mb-0">facebook</p>
+                    </div>
+                  </a>
+                </div> -->
+                <hr>
+                <p class="bannerFormRegister m-0">Create an account <a href="sign-up.php" alt='Sign Up'>Sign Up!</a></p>
+              </div>
+              <p class="formBtmDesc text-center">Connect With best Campuses and Recruiters in one place.</p>
             </div>
           </div>
         </div>
-      </div> -->
-      <!-- <div class="separator separator-bottom separator-skew zindex-100">
-        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
-        </svg>
-      </div> -->
+      </div>
     </div>
 
-    <!-- Page content -->
-    <div class="container mt--8 pb-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-8">
-          <div class="card bg-secondary border-0 mb-0">
-            <!-- Sign in with Github and google  -->
-            <!-- <div class="card-header bg-transparent pb-5">
-              <div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
-              <div class="btn-wrapper text-center">
-                <a href="#" class="btn btn-neutral btn-icon">
-                  <span class="btn-inner--icon"><img src="img/icons/common/github.svg"></span>
-                  <span class="btn-inner--text">Github</span>
-                </a>
-                <a href="#" class="btn btn-neutral btn-icon">
-                  <span class="btn-inner--icon"><img src="img/icons/common/google.svg"></span>
-                  <span class="btn-inner--text">Google</span>
-                </a>
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-4">
+            <h4 class="mt-0">Follow US</h4>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Assumenda, fuga consequatur! Asperiores facilis ullam perspiciatis.</p>
+            <ul class="nav navbar-nav">
+              <li><a href="#" title="Facebook" class="facebook"><img src="resources/images/facebook.png" alt="Facebook"></a></li>
+              <li><a href="#" title="Google" class="google"><img src="resources/images/google-plus.png" alt="Google"></a></li>
+              <li><a href="#" title="Linkedin" class="linkedIn"><img src="resources/images/linkedin.png" alt="Linkedin"></a></li>
+              <li><a href="#" title="Twitter" class="twitter"><img src="resources/images/twitter.png" alt="Twitter"></a></li>
+            </ul>
+          </div>
+          <div class="col-sm-2">
+            <h4>About</h4>
+            <ul class="quickLinks">
+              <li><a href="#" title="">Blog</a></li>
+            </ul>
+          </div>
+          <div class="col-sm-3">
+            <h4>Solutions</h4>
+            <ul class="quickLinks">
+              <li><a href="https://jobaskit.com/feature_1.php" title="Colleges">Colleges</a></li>
+              <li><a href="https://jobaskit.com/feature.php" title="Recruiters">Requiters</a></li>
+            </ul>
+          </div>
+          <div class="col-sm-3">
+            <h4>For advertisements contact</h4>
+            <div class="footerIT">
+              <div class="footerITImg">
+                <img src="resources/images/call.png">
               </div>
-            </div> -->
-            
-            <div class="card-body px-lg-5 py-lg-5">
-              <div class="text-center text-muted mb-4">
-                <!-- <small>Or sign in with credentials</small> -->
-                <h2>LOGIN</h2>
+              <div class="footerITText">
+                <p>84354 34233</p>
               </div>
-              <form action="" method="post" role="form">
-                <div class="form-group mb-3">
-                  <div class="input-group input-group-merge input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                    </div>
-                    <input name="email" class="form-control" placeholder="Email" type="email">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-group input-group-merge input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                    </div>
-                    <input name="password" class="form-control" placeholder="Password" type="password">
-                  </div>
-                </div>
-                <div class="custom-control custom-control-alternative custom-checkbox">
-                  <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
-                  <label class="custom-control-label" for=" customCheckLogin">
-                    <span class="text-muted">Remember me</span>
-                  </label>
-                </div>
-                <div class="text-center">
-                  <button type="submit" name="submit" class="btn btn-warning my-4">Sign in</button>
-                </div>
-              </form>
-              <div class="row">
-                <div class="col-6">
-                  <a href="#" class="text-dark"><small>Forgot password?</small></a>
-                </div>
-                <div class="col-6 text-right">
-                  <a href="sign-up.php" class="text-dark"><small>Create new account</small></a>
-                </div>
-             </div>
+            </div>
+            <div class="footerIT">
+              <div class="footerITImg">
+                <img src="resources/images/email.png">
+              </div>
+              <div class="footerITText">
+                <p>jobaskit@gmail.com</p>
+              </div>
             </div>
           </div>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-  <br> <br> 
-
-  <!-- Footer -->
-  <footer class="py-5" id="footer-main">
-    <div class="container">
-      <div class="row align-items-center justify-content-xl-between">
-        <div class="col-xl-6">
-          <div class="copyright text-center text-xl-left text-muted">
-            &copy; 2021 <a href="https://jobaskit.com/" class="font-weight-bold ml-1" target="_blank">JoBaskit</a>
+          <div class="col-sm-12">
+            <div class="copyRights text-center">
+              <p class="mb-0">
+                Copyright © 2021 Jobaskit | All rights reserved.
+              </p>
+            </div>
           </div>
         </div>
-        <div class="col-xl-6">
-          <ul class="nav nav-footer justify-content-center justify-content-xl-end">
-            <li class="nav-item">
-              <a href="https://jobaskit.com/" class="nav-link" target="_blank">Makos Info Tech Pvt Ltd</a>
-            </li>
-            <li class="nav-item">
-              <a href="https://jobaskit.com/" class="nav-link" target="_blank">About Us</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
-            </li> -->
-            <!-- <li class="nav-item">
-              <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md" class="nav-link" target="_blank">MIT License</a>
-            </li> -->
-          </ul>
-        </div>
       </div>
-    </div>
-  </footer>
+    </footer>
 
-  <?php require_once 'requires/end-scripts.php' ?>
-</body>
-
+    <!-- Bootstrap scripts-->
+    <script src="resources/bootstrap/jquery-1.12.4.min.js"></script>
+    <script src="resources/bootstrap/bootstrap.min.js"></script>
+    <!-- Custom scripts-->
+    <script src="resources/js/site.js"></script>
+    
+  </body>
 </html>
