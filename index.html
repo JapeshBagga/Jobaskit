@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login popup box</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div class="popup">
+      <div class="login-popup">
+        <div class="box">
+          <div class="form">
+            <div class="close">&times;</div>
+            <h4>
+              Fill in the following information to build your Portfolio / Apply
+              for Job
+            </h4>
+            <a href="#"><button type="button" class="btn">Click Here</button></a>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        body {
+          font-family: sans-serif;
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        * {
+          box-sizing: border-box;
+          margin: 0;
+        }
+
+        .login-popup {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1099;
+          background-color: rgba(0, 0, 0, 0.6);
+          visibility: hidden;
+          opacity: 0;
+          transition: all 1s ease;
+        }
+        .login-popup.show {
+          visibility: visible;
+          opacity: 1;
+        }
+        .login-popup .box {
+          background-color: #f3e6e6;
+          width: 450px;
+          position: fixed;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          flex-wrap: wrap;
+          opacity: 0;
+          margin-left: 50px;
+          transition: all 1s ease;
+          padding-bottom: 30px;
+        }
+        .login-popup.show .box {
+          opacity: 1;
+          margin-left: 0;
+        }
+        .login-popup .form {
+          text-align: center;
+          padding-top: 30px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+
+        .login-popup .box .form .btn {
+          width: 50%;
+          background-color: #e25d34;
+          margin-top: 40px;
+          height: 45px;
+          border: none;
+          border-radius: 25px;
+          font-size: 15px;
+          text-transform: uppercase;
+          color: #050505;
+          cursor: pointer;
+        }
+        .login-popup .box .form .btn:focus {
+          outline: none;
+        }
+
+        .login-popup .box .form .close {
+          position: absolute;
+          right: 10px;
+          top: 0px;
+          font-size: 30px;
+          cursor: pointer;
+        }
+
+        /*responsive*/
+        @media (max-width: 767px) {
+          .login-popup .box {
+            width: calc(100% - 30px);
+          }
+
+          .login-popup .box .form {
+            flex: 0 0 100%;
+            max-width: 100%;
+          }
+        }
+      </style>
+      <script>
+        const loginPopup = document.querySelector(".login-popup");
+        const close = document.querySelector(".close");
+
+        window.addEventListener("load", function () {
+          showPopup();
+          // setTimeout(function(){
+          //   loginPopup.classList.add("show");
+          // },5000)
+        });
+
+        function showPopup() {
+          const timeLimit = 1; // seconds;
+          let i = 0;
+          const timer = setInterval(function () {
+            i++;
+            if (i == timeLimit) {
+              clearInterval(timer);
+              loginPopup.classList.add("show");
+            }
+            console.log(i);
+          }, 1000);
+        }
+
+        close.addEventListener("click", function () {
+          loginPopup.classList.remove("show");
+        });
+      </script>
+    </div>
+  </body>
+</html>
